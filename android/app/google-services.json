@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "956634705622",
+    "firebase_url": "https://mondu-farm-default-rtdb.firebaseio.com",
+    "project_id": "mondu-farm",
+    "storage_bucket": "mondu-farm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956634705622:android:ca9aa8a746534b3a22e377",
+        "android_client_info": {
+          "package_name": "com.example.mondu_farm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZFQMBdB4aCazXgXt0rlp9VYZzNpxuVXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

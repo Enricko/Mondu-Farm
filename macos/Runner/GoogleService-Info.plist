@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyDA8mmgWXPzJ4noiHF_Xzn7o0lArijkIfY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>956634705622</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.monduFarm.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>mondu-farm</string>
+	<key>STORAGE_BUCKET</key>
+	<string>mondu-farm.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:956634705622:ios:8b1f26f9583f830722e377</string>
+	<key>DATABASE_URL</key>
+	<string>https://mondu-farm-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
