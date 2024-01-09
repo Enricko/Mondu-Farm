@@ -10,14 +10,13 @@ import 'package:flutter_sound/public/flutter_sound_player.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:intl/intl.dart';
+import 'package:mondu_farm/utils/color.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:typed_data' show Uint8List;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:flutter/foundation.dart' show kIsWeb;
-
-import '../color.dart';
 
 class AudioChatWidget extends StatefulWidget {
   const AudioChatWidget({super.key, required this.data, required this.maxDurasi});
@@ -99,19 +98,17 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
     null,
   ];
 
-  StreamSubscription? _recorderSubscription;
   StreamSubscription? _playerSubscription;
   StreamSubscription? _recordingDataSubscription;
 
   FlutterSoundPlayer playerModule = FlutterSoundPlayer();
-  FlutterSoundRecorder recorderModule = FlutterSoundRecorder();
 
   String _playerTxt = '00:00:00';
 
   double sliderCurrentPosition = 0.0;
   double maxDuration = 1.0;
   Media? _media = Media.urlFile;
-  Codec _codec = Codec.mp3;
+  Codec _codec = Codec.opusWebM;
 
   bool? _encoderSupported = true; // Optimist
   bool _decoderSupported = true; // Optimist
@@ -125,32 +122,12 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
     await playerModule.closePlayer();
     await playerModule.openPlayer();
     await playerModule.setSubscriptionDuration(Duration(milliseconds: 10));
-    await recorderModule.setSubscriptionDuration(Duration(milliseconds: 10));
     await initializeDateFormatting();
     await setCodec(_codec);
   }
 
-  Future<void> openTheRecorder() async {
-    if (!kIsWeb) {
-      var status = await Permission.microphone.request();
-      if (status != PermissionStatus.granted) {
-        throw RecordingPermissionException('Microphone permission not granted');
-      }
-    }
-    await recorderModule.openRecorder();
-
-    if (!await recorderModule.isEncoderSupported(_codec) && kIsWeb) {
-      _codec = Codec.opusWebM;
-    }
-  }
-
   Future<void> init() async {
-    await openTheRecorder();
     await _initializeExample();
-
-    if ((!kIsWeb) && Platform.isAndroid) {
-      await copyAssets();
-    }
 
     final session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration(
@@ -170,31 +147,14 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
     ));
   }
 
-  Future<void> copyAssets() async {
-    var dataBuffer = (await rootBundle.load('assets/canardo.png')).buffer.asUint8List();
-    var path = '${await playerModule.getResourcePath()}/assets';
-    if (!await Directory(path).exists()) {
-      await Directory(path).create(recursive: true);
-    }
-    await File('$path/canardo.png').writeAsBytes(dataBuffer);
-  }
-
   @override
   void initState() {
     super.initState();
     setState(() {
-      maxDuration = widget.maxDurasi;
+      maxDuration = widget.maxDurasi.toDouble();
     });
     init();
   }
-
-  void cancelRecorderSubscriptions() {
-    if (_recorderSubscription != null) {
-      _recorderSubscription!.cancel();
-      _recorderSubscription = null;
-    }
-  }
-
   void cancelPlayerSubscriptions() {
     if (_playerSubscription != null) {
       _playerSubscription!.cancel();
@@ -218,7 +178,6 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
   void dispose() {
     super.dispose();
     cancelPlayerSubscriptions();
-    cancelRecorderSubscriptions();
     cancelRecordingDataSubscription();
     releaseFlauto();
   }
@@ -226,7 +185,6 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
   Future<void> releaseFlauto() async {
     try {
       await playerModule.closePlayer();
-      await recorderModule.closeRecorder();
     } on Exception {
       playerModule.logger.e('Released unsuccessful');
     }
@@ -255,6 +213,8 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
     cancelPlayerSubscriptions();
     _playerSubscription = playerModule.onProgress!.listen((e) {
       // maxDuration = e.duration.inMilliseconds.toDouble();
+      print(e.duration.inMilliseconds.toDouble());
+      print(e.position.inMilliseconds.toDouble());
       // if (maxDuration <= 0) maxDuration = 0.0;
 
       sliderCurrentPosition = min(e.position.inMilliseconds.toDouble(), maxDuration);
@@ -264,8 +224,6 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
 
       var date = DateTime.fromMillisecondsSinceEpoch(e.position.inMilliseconds, isUtc: true);
       var txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
-      var dateMax = DateTime.fromMillisecondsSinceEpoch(maxDuration.toInt(), isUtc: true);
-      var txtMax = DateFormat('mm:ss:SS', 'en_GB').format(dateMax);
       setState(() {
         _playerTxt = txt.substring(0, 8);
       });
@@ -361,20 +319,6 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
     setState(() {});
   }
 
-  void pauseResumeRecorder() async {
-    try {
-      if (recorderModule.isPaused) {
-        await recorderModule.resumeRecorder();
-      } else {
-        await recorderModule.pauseRecorder();
-        assert(recorderModule.isPaused);
-      }
-    } on Exception catch (err) {
-      recorderModule.logger.e('error: $err');
-    }
-    setState(() {});
-  }
-
   Future<void> seekToPlayer(int milliSecs) async {
     //playerModule.logger.d('-->seekToPlayer');
     try {
@@ -391,13 +335,6 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
   void Function()? onPauseResumePlayerPressed() {
     if (playerModule.isPaused || playerModule.isPlaying) {
       return pauseResumePlayer;
-    }
-    return null;
-  }
-
-  void Function()? onPauseResumeRecorderPressed() {
-    if (recorderModule.isPaused || recorderModule.isRecording) {
-      return pauseResumeRecorder;
     }
     return null;
   }
@@ -430,7 +367,6 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
   }
 
   Future<void> setCodec(Codec codec) async {
-    _encoderSupported = await recorderModule.isEncoderSupported(codec);
     _decoderSupported = await playerModule.isDecoderSupported(codec);
 
     setState(() {
@@ -443,7 +379,7 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
     return Card(
       color: Warna.ungu,
       shape: RoundedRectangleBorder(
-        borderRadius: widget.data['pesan_dari'] == "admin"
+        borderRadius: widget.data['pesan_dari'] == "user"
             ? BorderRadius.only(
                 bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20), topLeft: Radius.circular(20))
             : BorderRadius.only(

@@ -25,12 +25,13 @@ class Chat {
   }
 
 
-  static InsertChat(String filePath, String recorderTxt,String idUser) async {
+  static Future<void> InsertChat(String filePath, String recorderTxt,String idUser) async {
+    print("File : ${File(filePath).existsSync()}");
     // -NnJThg-A5k5iNE8Z1VT
     var metadata = SettableMetadata(
-      contentType: "audio/mpeg",
+      contentType: "video/mp4",
     );
-    String fileName = "${generateRandomString(10)}-${DateTime.now()}.mp3";
+    String fileName = "${generateRandomString(10)}-${DateTime.now()}.mp4";
     var fileStorage = FirebaseStorage.instance.ref().child("audio").child(fileName);
 
     if (!kIsWeb) {
@@ -38,7 +39,7 @@ class Chat {
         String linkPath = await fileStorage.getDownloadURL();
         Map<String, dynamic> data = {
           "pesan": linkPath,
-          "pesan_dari": "admin",
+          "pesan_dari": "user",
           "durasi": recorderTxt,
           "type": "voice",
           "tanggal": DateTime.now().toString(),
@@ -58,7 +59,7 @@ class Chat {
         String linkPath = await fileStorage.getDownloadURL();
         Map<String, dynamic> data = {
           "pesan": linkPath,
-          "pesan_dari": "admin",
+          "pesan_dari": "user",
           "durasi": recorderTxt,
           "type": "voice",
           "tanggal": DateTime.now().toString(),
