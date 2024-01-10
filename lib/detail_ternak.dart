@@ -2,17 +2,17 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mondu_farm/detail_chat.dart';
 import 'package:mondu_farm/success.dart';
 import 'package:mondu_farm/utils/alerts.dart';
+import 'package:mondu_farm/utils/custom_extension.dart';
 
 class DetailTernak extends StatefulWidget {
   final String uid;
   final String url;
   final String kategori;
 
-  const DetailTernak(
-      {Key? key, required this.url, required this.kategori, required this.uid})
-      : super(key: key);
+  const DetailTernak({Key? key, required this.url, required this.kategori, required this.uid}) : super(key: key);
 
   @override
   State<DetailTernak> createState() => _DetailTernakState();
@@ -28,6 +28,9 @@ class _DetailTernakState extends State<DetailTernak> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.kategori.title()),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(25),
@@ -51,20 +54,15 @@ class _DetailTernakState extends State<DetailTernak> {
                     .child(widget.uid)
                     .onValue,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData &&
-                      (snapshot.data!).snapshot.value != null) {
+                  if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
                     Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                        (snapshot.data! as DatabaseEvent).snapshot.value
-                            as Map<dynamic, dynamic>);
+                        (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
                     return Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Expanded(
-                                child: DetailInfo(
-                                    icon: "assets/icon_umur.png",
-                                    value: data['usia'].toString())),
+                            Expanded(child: DetailInfo(icon: "assets/icon_umur.png", value: data['usia'].toString())),
                             SizedBox(
                               width: 10,
                             ),
@@ -90,6 +88,48 @@ class _DetailTernakState extends State<DetailTernak> {
                             value: currencyFormatter.format(
                               data['harga'],
                             )),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            IconButton(
+                                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailChat(
+                                        idTernak: snapshot.data!.snapshot.key!,
+                                        kategori: widget.kategori
+                                      ),
+                                    ),
+                                  );
+                                },
+                                icon: Image.asset("assets/icon_chat.png")),
+                            IconButton(
+                                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
+                                onPressed: () {
+                                  Alerts.showAlertYesNo(
+                                    onPressYes: () async {
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (ctx) => Success(),
+                                        ),
+                                        (route) => false,
+                                      );
+                                    },
+                                    onPressNo: () {
+                                      Navigator.pop(context);
+                                    },
+                                    context: context,
+                                  );
+                                },
+                                icon: Image.asset("assets/icon_booking.png")),
+                          ],
+                        )
                       ],
                     );
                   }
@@ -104,42 +144,6 @@ class _DetailTernakState extends State<DetailTernak> {
                   );
                 },
               ),
-              SizedBox(
-                height: 40,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.purple)),
-                      onPressed: () {},
-                      icon: Image.asset("assets/icon_chat.png")),
-                  IconButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.purple)),
-                      onPressed: () {
-                        Alerts.showAlertYesNo(
-                          onPressYes: () async {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (ctx) => Success(),
-                              ),
-                              (route) => false,
-                            );
-                          },
-                          onPressNo: () {
-                            Navigator.pop(context);
-                          },
-                          context: context,
-                        );
-                      },
-                      icon: Image.asset("assets/icon_booking.png")),
-                ],
-              )
             ],
           ),
         ),

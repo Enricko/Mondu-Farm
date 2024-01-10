@@ -24,57 +24,49 @@ class Chat {
     }
   }
 
-
-  static Future<void> InsertChat(String filePath, String recorderTxt,String idUser) async {
-    print("File : ${File(filePath).existsSync()}");
+  static Future<void> InsertChat(String filePath, int durasi, String idUser, String idTernak,String kategori) async {
     // -NnJThg-A5k5iNE8Z1VT
     var metadata = SettableMetadata(
-      contentType: "video/mp4",
+      contentType: "audio/mp4",
     );
     String fileName = "${generateRandomString(10)}-${DateTime.now()}.mp4";
     var fileStorage = FirebaseStorage.instance.ref().child("audio").child(fileName);
+    var dbRef = FirebaseDatabase.instance.ref().child("pesan").child(idUser).child(idTernak);
 
-    if (!kIsWeb) {
-      await fileStorage.putFile(File(filePath), metadata).whenComplete(() async {
-        String linkPath = await fileStorage.getDownloadURL();
-        Map<String, dynamic> data = {
-          "pesan": linkPath,
-          "pesan_dari": "user",
-          "durasi": recorderTxt,
-          "type": "voice",
-          "tanggal": DateTime.now().toString(),
-        };
-        await FirebaseDatabase.instance
-            .ref()
-            .child("pesan")
-            .child(idUser)
-            .push()
-            .set(data)
-            .whenComplete(() {
-          EasyLoading.showSuccess('Pesan telah di tambahkan', dismissOnTap: true, duration: Duration(seconds: 3));
+    await dbRef.update({
+      "last_chat_user": DateTime.now().toString(),
+      "kategori": kategori.toLowerCase(),
+    }).then((value) async {
+      if (!kIsWeb) {
+        await fileStorage.putFile(File(filePath), metadata).whenComplete(() async {
+          String linkPath = await fileStorage.getDownloadURL();
+          Map<String, dynamic> data = {
+            "pesan": linkPath,
+            "pesan_dari": "user",
+            "durasi": durasi,
+            "type": "voice",
+            "tanggal": DateTime.now().toString(),
+          };
+          await dbRef.child("data").push().set(data).whenComplete(() {
+            EasyLoading.showSuccess('Pesan telah di tambahkan', dismissOnTap: true, duration: Duration(seconds: 3));
+          });
         });
-      });
-    } else {
-      fileStorage.putData(await convertBlobUrlToUint8List(filePath), metadata).then((p0) async {
-        String linkPath = await fileStorage.getDownloadURL();
-        Map<String, dynamic> data = {
-          "pesan": linkPath,
-          "pesan_dari": "user",
-          "durasi": recorderTxt,
-          "type": "voice",
-          "tanggal": DateTime.now().toString(),
-        };
-        await FirebaseDatabase.instance
-            .ref()
-            .child("pesan")
-            .child(idUser)
-            .push()
-            .set(data)
-            .whenComplete(() {
-          EasyLoading.showSuccess('Pesan telah di tambahkan', dismissOnTap: true, duration: Duration(seconds: 3));
+      } else {
+        fileStorage.putData(await convertBlobUrlToUint8List(filePath), metadata).then((p0) async {
+          String linkPath = await fileStorage.getDownloadURL();
+          Map<String, dynamic> data = {
+            "pesan": linkPath,
+            "pesan_dari": "user",
+            "durasi": durasi,
+            "type": "voice",
+            "tanggal": DateTime.now().toString(),
+          };
+
+          await dbRef.child("data").push().set(data).whenComplete(() {
+            EasyLoading.showSuccess('Pesan telah di tambahkan', dismissOnTap: true, duration: Duration(seconds: 3));
+          });
         });
-      });
-    }
+      }
+    });
   }
-  
 }

@@ -22,8 +22,10 @@ import '../../chat.dart';
 import '../color.dart';
 
 class RecordChatWidget extends StatefulWidget {
-  const RecordChatWidget({super.key, required this.idUser});
+  const RecordChatWidget({super.key, required this.idUser, required this.idTernak, required this.kategori});
   final String idUser;
+  final String idTernak;
+  final String kategori;
 
   @override
   State<RecordChatWidget> createState() => _RecordChatWidgetState();
@@ -153,8 +155,8 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
   FlutterSoundPlayer playerModule = FlutterSoundPlayer();
   FlutterSoundRecorder recorderModule = FlutterSoundRecorder();
 
-  String _recorderTxt = '00:00:00';
-  String _playerTxt = '00:00:00';
+  Duration _recorderDuration = Duration();
+  Duration _playerDuration = Duration();
   double? _dbLevel;
 
   double sliderCurrentPosition = 0.0;
@@ -332,11 +334,8 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
       recorderModule.logger.d('startRecorder');
 
       _recorderSubscription = recorderModule.onProgress!.listen((e) {
-        var date = DateTime.fromMillisecondsSinceEpoch(e.duration.inMilliseconds, isUtc: true);
-        var txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
-
         setState(() {
-          _recorderTxt = txt.substring(0, 8);
+          _recorderDuration = e.duration;
           _dbLevel = e.decibels;
         });
       });
@@ -404,10 +403,8 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
         sliderCurrentPosition = 0.0;
       }
 
-      var date = DateTime.fromMillisecondsSinceEpoch(e.position.inMilliseconds, isUtc: true);
-      var txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
       setState(() {
-        _playerTxt = txt.substring(0, 8);
+        _playerDuration = e.position;
       });
     });
   }
@@ -665,16 +662,23 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
 
   void submitVoiceNote() async {
     // await recorderModule.getRecordURL(path: _path[_codec.index]!).then((value) async {
-    await Chat.InsertChat(_path[_codec.index]!, _recorderTxt, widget.idUser).whenComplete(() {
+    await Chat.InsertChat(_path[_codec.index]!, _recorderDuration.inMilliseconds, widget.idUser,widget.idTernak,widget.kategori).whenComplete(() {
       recorderModule.stopRecorder();
       playerModule.closePlayer();
-      _recorderTxt = "00:00:00";
-      _playerTxt = "00:00:00";
+      _playerDuration = Duration.zero;
+      _recorderDuration = Duration.zero;
       sliderCurrentPosition = 0;
       maxDuration = 1;
       readySubmit = false;
       setState(() {});
     });
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${duration.inHours > 0 ? duration.inHours.toString() + ":" : ""}$twoDigitMinutes:$twoDigitSeconds";
   }
 
   @override
@@ -714,9 +718,9 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("$_playerTxt"),
+                    Text("${_formatDuration(_playerDuration)}"),
                     Divider(color: Colors.black.withOpacity(0.3), height: 1),
-                    Text("$_recorderTxt"),
+                    Text("${_formatDuration(_recorderDuration)}"),
                   ],
                 ),
               ],
@@ -762,3 +766,107 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
     );
   }
 }
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_sound/flutter_sound.dart';
+// import 'package:just_audio/just_audio.dart';
+
+// class RecordChatWidget extends StatefulWidget {
+//   const RecordChatWidget({super.key, required this.idUser});
+//   final String idUser;
+
+//   @override
+//   State<RecordChatWidget> createState() => _RecordChatWidgetState();
+// }
+
+// class _RecordChatWidgetState extends State<RecordChatWidget> {
+//   AudioPlayer? audioPlayer;
+//   FlutterSoundRecorder? _audioRecorder;
+//   bool isRecording = false;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     audioPlayer = AudioPlayer();
+//     _audioRecorder = FlutterSoundRecorder();
+//     _initAudioRecorder();
+//   }
+
+//   Future<void> _initAudioRecorder() async {
+//     await _audioRecorder!.openRecorder();
+//   }
+
+//   Future<void> _startRecording() async {
+//     try {
+//       await _audioRecorder!.startRecorder(
+//         toFile: 'your_custom_recording_path.aac', // Set your desired path
+//         codec: Codec.aacMP4,
+//       );
+//       setState(() {
+//         isRecording = true;
+//       });
+//     } catch (err) {
+//       print('Recording failed: $err');
+//     }
+//   }
+
+//   Future<void> _stopRecording() async {
+//     try {
+//       await _audioRecorder!.stopRecorder();
+//       setState(() {
+//         isRecording = false;
+//       });
+//       print('Recording saved.');
+//     } catch (err) {
+//       print('Stop recording failed: $err');
+//     }
+//   }
+
+//    Future<void> _playRecording() async {
+//     try {
+//       await audioPlayer!.setFilePath('your_custom_recording_path.aac'); // Set the recorded file path
+//       await audioPlayer!.play();
+//     } catch (err) {
+//       print('Playback failed: $err');
+//     }
+//   }
+
+//   @override
+//   void dispose() {
+//     audioPlayer!.dispose();
+//     _audioRecorder!.closeRecorder();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Audio Recorder'),
+//       ),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: <Widget>[
+//             if (isRecording) Text('Recording in progress...'),
+//             SizedBox(height: 20),
+//             ElevatedButton(
+//               onPressed: isRecording ? null : _startRecording,
+//               child: Text('Start Recording'),
+//             ),
+//             SizedBox(height: 20),
+//             ElevatedButton(
+//               onPressed: isRecording ? _stopRecording : null,
+//               child: Text('Stop Recording'),
+//             ),
+//             SizedBox(height: 20),
+//             ElevatedButton(
+//               onPressed: _playRecording,
+//               child: Text('Play Recorded Audio'),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

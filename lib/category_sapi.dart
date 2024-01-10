@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mondu_farm/detail_ternak.dart';
+import 'package:mondu_farm/utils/custom_extension.dart';
 
 class CategoryList extends StatefulWidget {
   final String kategori;
@@ -33,6 +34,9 @@ class _CategoryListState extends State<CategoryList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("${widget.kategori.title()}"),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 25),

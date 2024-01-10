@@ -5,18 +5,20 @@ import 'package:mondu_farm/utils/audio_chat/record_chat_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailChat extends StatefulWidget {
-  const DetailChat({Key? key}) : super(key: key);
+  const DetailChat({Key? key, required this.idTernak, required this.kategori}) : super(key: key);
+  final String idTernak;
+  final String kategori;
 
   @override
   State<DetailChat> createState() => _DetailChatState();
 }
 
 class _DetailChatState extends State<DetailChat> {
-  String id_user = "";
+  String idUser = "";
   Future<void> getPref() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
-      id_user = pref.getString('id_user')!;
+      idUser = pref.getString('id_user')!;
     });
   }
 
@@ -33,7 +35,14 @@ class _DetailChatState extends State<DetailChat> {
         title: Text("Detail Chat"),
       ),
       body: StreamBuilder(
-        stream: FirebaseDatabase.instance.ref().child("pesan").child("-NnJThg-A5k5iNE8Z1VT").orderByChild("metrics/tanggal").onValue,
+        stream: FirebaseDatabase.instance
+            .ref()
+            .child("pesan")
+            .child(idUser)
+            .child("${widget.idTernak}")
+            .child("data")
+            .orderByChild("metrics/tanggal")
+            .onValue,
         builder: (context, snapshot) {
           if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
             // Variable data mempermudah memanggil data pada database
@@ -66,10 +75,9 @@ class _DetailChatState extends State<DetailChat> {
                 return Container(
                   margin: const EdgeInsets.symmetric(horizontal: 15),
                   child: Row(
-                    mainAxisAlignment:
-                        e['pesan_dari'] == "user" ? MainAxisAlignment.end : MainAxisAlignment.start,
+                    mainAxisAlignment: e['pesan_dari'] == "user" ? MainAxisAlignment.end : MainAxisAlignment.start,
                     children: <Widget>[
-                      AudioChatWidget(data: e, maxDurasi: durationStringToDouble(e['durasi']))
+                      AudioChatWidget(data: e),
                     ],
                   ),
                 );
@@ -148,7 +156,9 @@ class _DetailChatState extends State<DetailChat> {
       //   ],
       // ),
       bottomNavigationBar: RecordChatWidget(
-        idUser: "-NnJThg-A5k5iNE8Z1VT",
+        idUser: idUser,
+        idTernak: widget.idTernak,
+        kategori: widget.kategori,
       ),
       // Container(
       //   padding: EdgeInsets.fromLTRB(10, 17, 10, 20),
@@ -177,21 +187,5 @@ class _DetailChatState extends State<DetailChat> {
       //   ),
       // )
     );
-  }
-
-  double durationStringToDouble(String durasi) {
-    double durationDouble = 1.0;
-    String durationString = durasi; // Example duration string in mm:ss:SS format
-
-    List<String> parts = durationString.split(':');
-
-    // Assuming the string format is "mm:ss:SS"
-    int minutes = int.parse(parts[0]);
-    int seconds = int.parse(parts[1]);
-    int milliseconds = int.parse(parts[2]);
-
-    // Convert the duration to a double representation in milliseconds
-    durationDouble = (minutes * 60 * 1000) + (seconds * 1000) + milliseconds / 1;
-    return durationDouble;
   }
 }
