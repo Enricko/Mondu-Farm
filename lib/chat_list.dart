@@ -78,179 +78,173 @@ class _ChatListState extends State<ChatList> {
                 return ListView.builder(
                   itemCount: dataList.length,
                   itemBuilder: (context, index) {
-                    return Column(
-                      children: dataList.map(
-                        (e) {
-                          Future<Map<dynamic, dynamic>>? dataTernak = FirebaseDatabase.instance
-                              .ref()
-                              .child("ternak")
-                              .child("${dataList[index]["kategori"]}")
-                              .child("${dataList[index]["uid"]}")
-                              .get()
-                              .then((value) {
-                            return value.value as Map<dynamic, dynamic>;
-                          });
-                          return FutureBuilder(
-                            future: dataTernak,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                var data = snapshot.data!;
-                                return ListTile(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailChat(
-                                          idTernak: dataList[index]['uid'],
-                                          kategori: dataList[index]['kategori'],
-                                          dataTernak: data,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  trailing: Icon(Icons.arrow_forward_ios),
-                                  tileColor: Colors.black12,
-                                  title: Text("${dataList[index]['kategori'].toString().title()}"),
-                                  leading: SizedBox(
-                                    width: 125,
-                                    height: 50,
-                                    child: FutureBuilder(
-                                      future: getImageFromStorage(data['gambar'], dataList[index]['kategori']),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasData) {
-                                          return Image.network(
-                                            snapshot.data!,
-                                            width: 125,
-                                          );
-                                        }
-                                        if (snapshot.hasError) {
-                                          return Text("Terjadi Kesalahan");
-                                        }
-                                        return Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      },
-                                    ),
+                    Future<Map<dynamic, dynamic>>? dataTernak = FirebaseDatabase.instance
+                        .ref()
+                        .child("ternak")
+                        .child("${dataList[index]["kategori"]}")
+                        .child("${dataList[index]["uid"]}")
+                        .get()
+                        .then((value) {
+                      return value.value as Map<dynamic, dynamic>;
+                    });
+                    return FutureBuilder(
+                      future: dataTernak,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          var data = snapshot.data!;
+                          return ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailChat(
+                                    idTernak: dataList[index]['uid'],
+                                    kategori: dataList[index]['kategori'],
+                                    dataTernak: data,
                                   ),
-                                  subtitle: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Image.asset(
-                                                "assets/icon_umur.png",
-                                                height: 20,
-                                              ),
-                                              Text(
-                                                "${data['usia']}",
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            width: 25,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Image.asset("assets/icon_tinggi.png", height: 20),
-                                              Text("${data['tinggi']}")
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Image.asset("assets/icon_bobot.png", height: 20),
-                                          Text("${data['berat']}")
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Image.asset("assets/icon_harga.png", height: 20),
-                                              Container(
-                                                width: 130,
-                                                child: Text(
-                                                  "${currencyFormatter.format(data['harga'])}",
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                              return ListTile(
-                                onTap: null,
-                                trailing: Icon(Icons.arrow_forward_ios),
-                                tileColor: Colors.black12,
-                                title: Text("---"),
-                                leading: SizedBox(
-                                  width: 125,
-                                  height: 50,
-                                  child: Container(),
                                 ),
-                                subtitle: Column(
+                              );
+                            },
+                            trailing: Icon(Icons.arrow_forward_ios),
+                            tileColor: Colors.black12,
+                            title: Text("${dataList[index]['kategori'].toString().title()}"),
+                            leading: SizedBox(
+                              width: 125,
+                              height: 50,
+                              child: FutureBuilder(
+                                future: getImageFromStorage(data['gambar'], dataList[index]['kategori']),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Image.network(
+                                      snapshot.data!,
+                                      width: 125,
+                                    );
+                                  }
+                                  if (snapshot.hasError) {
+                                    return Text("Terjadi Kesalahan");
+                                  }
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                              ),
+                            ),
+                            subtitle: Column(
+                              children: [
+                                Row(
                                   children: [
                                     Row(
                                       children: [
-                                        Row(
-                                          children: [
-                                            Image.asset(
-                                              "assets/icon_umur.png",
-                                              height: 20,
-                                            ),
-                                            Text(
-                                              "---",
-                                            )
-                                          ],
+                                        Image.asset(
+                                          "assets/icon_umur.png",
+                                          height: 20,
                                         ),
-                                        SizedBox(
-                                          width: 25,
-                                        ),
-                                        Row(
-                                          children: [Image.asset("assets/icon_tinggi.png", height: 20), Text("---")],
-                                        ),
+                                        Text(
+                                          "${data['usia']}",
+                                        )
                                       ],
                                     ),
                                     SizedBox(
-                                      height: 5,
-                                    ),
-                                    Row(
-                                      children: [Image.asset("assets/icon_bobot.png", height: 20), Text("---")],
-                                    ),
-                                    SizedBox(
-                                      height: 5,
+                                      width: 25,
                                     ),
                                     Row(
                                       children: [
-                                        Row(
-                                          children: [
-                                            Image.asset("assets/icon_harga.png", height: 20),
-                                            Text(
-                                              "Rp. ---",
-                                              maxLines: 3,
-                                            )
-                                          ],
+                                        Image.asset("assets/icon_tinggi.png", height: 20),
+                                        Text("${data['tinggi']}")
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  children: [
+                                    Image.asset("assets/icon_bobot.png", height: 20),
+                                    Text("${data['berat']}")
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Image.asset("assets/icon_harga.png", height: 20),
+                                        Container(
+                                          width: 130,
+                                          child: Text(
+                                            "${currencyFormatter.format(data['harga'])}",
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
-                              );
-                            },
+                              ],
+                            ),
                           );
-                        },
-                      ).toList(),
+                        }
+                        return ListTile(
+                          onTap: null,
+                          trailing: Icon(Icons.arrow_forward_ios),
+                          tileColor: Colors.black12,
+                          title: Text("---"),
+                          leading: SizedBox(
+                            width: 125,
+                            height: 50,
+                            child: Container(),
+                          ),
+                          subtitle: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/icon_umur.png",
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        "---",
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 25,
+                                  ),
+                                  Row(
+                                    children: [Image.asset("assets/icon_tinggi.png", height: 20), Text("---")],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [Image.asset("assets/icon_bobot.png", height: 20), Text("---")],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Image.asset("assets/icon_harga.png", height: 20),
+                                      Text(
+                                        "Rp. ---",
+                                        maxLines: 3,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     );
                   },
                 );
