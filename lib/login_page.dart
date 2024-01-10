@@ -27,8 +27,8 @@ class _LoginPageState extends State<LoginPage> {
     var name = nameController.text;
     var phoneNumber = phoneNumberController.text;
       var data = {
-        'name': name,
-        'phone_number': phoneNumber,
+        'nama': name,
+        'no_telpon': phoneNumber,
       };
       Auth.login(data, context);
   }

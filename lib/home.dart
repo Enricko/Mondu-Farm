@@ -13,7 +13,7 @@ class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
 }
- String? name;
+ String? nama;
 String id_user = "";
 
 
@@ -31,9 +31,9 @@ class _HomeState extends State<Home> {
           .listen((event) {
         var snapshot = event.snapshot.value as Map;
         setState(() {
-          name = snapshot['name'];
+          nama = snapshot['nama'];
         });
-        print(name);
+        print(nama);
       });
     } catch (e) {
       print('Error fetching data: $e');
@@ -86,7 +86,7 @@ class _HomeState extends State<Home> {
                         width: 5,
                       ),
                       Text(
-                        name ?? "",
+                        nama ?? "",
                         style: TextStyle(fontSize: 16),
                       )
                     ],
