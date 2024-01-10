@@ -37,12 +37,13 @@ class _DetailTernakState extends State<DetailTernak> {
           child: Column(
             children: [
               SizedBox(
-                  height: 300,
-                  width: double.infinity,
-                  child: Image.network(
-                    widget.url,
-                    fit: BoxFit.contain,
-                  )),
+                height: 300,
+                width: double.infinity,
+                child: Image.network(
+                  widget.url,
+                  fit: BoxFit.contain,
+                ),
+              ),
               SizedBox(
                 height: 10,
               ),
@@ -83,11 +84,14 @@ class _DetailTernakState extends State<DetailTernak> {
                         SizedBox(
                           height: 10,
                         ),
-                        DetailInfo(
-                            icon: "assets/icon_harga.png",
-                            value: currencyFormatter.format(
-                              data['harga'],
-                            )),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: DetailInfo(
+                              icon: "assets/icon_harga.png",
+                              value: currencyFormatter.format(
+                                data['harga'],
+                              )),
+                        ),
                         SizedBox(
                           height: 40,
                         ),
@@ -102,7 +106,8 @@ class _DetailTernakState extends State<DetailTernak> {
                                     MaterialPageRoute(
                                       builder: (context) => DetailChat(
                                         idTernak: snapshot.data!.snapshot.key!,
-                                        kategori: widget.kategori
+                                        kategori: widget.kategori,
+                                        dataTernak: data,
                                       ),
                                     ),
                                   );
