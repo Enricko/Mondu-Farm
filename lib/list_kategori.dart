@@ -4,18 +4,21 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:mondu_farm/detail_ternak.dart';
 import 'package:mondu_farm/utils/custom_extension.dart';
 
 class CategoryList extends StatefulWidget {
   final String kategori;
-  const CategoryList({Key? key, required this.kategori}) : super(key: key);
+  const CategoryList({Key? key, required this.kategori,}) : super(key: key);
 
   @override
   State<CategoryList> createState() => _CategoryListState();
 }
 
 class _CategoryListState extends State<CategoryList> {
+
+  final FlutterTts flutterTts = FlutterTts();
 
 
   Future<String> getImageFromStorage(String pathName) {
@@ -25,21 +28,23 @@ class _CategoryListState extends State<CategoryList> {
     return ref.getDownloadURL();
   }
 
-  // Future<Reference> getDataFromStorage(String pathName) {
-  //   FirebaseStorage storage = FirebaseStorage.instance;
-  //   Reference ref = storage.ref().child("ternak").child("sapi").child(pathName);
-  //
-  //   return ref;
-  // }
+  Future<void> playVoiceover(String text) async {
+    await flutterTts.setLanguage("id-ID");
+    await flutterTts.setPitch(1.0);
+    await flutterTts.setSpeechRate(0.5);
+
+    await flutterTts.speak(text);
+  }
   @override
   Widget build(BuildContext context) {
+    playVoiceover('Silahkan memilih ${widget.kategori} yang di inginkan');
     return Scaffold(
       appBar: AppBar(
         title: Text("${widget.kategori.title()}"),
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 25),
+          padding: const EdgeInsets.symmetric(horizontal: 10,),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

@@ -24,7 +24,7 @@ class Chat {
     }
   }
 
-  static Future<void> InsertChat(String filePath, int durasi, String idUser, String idTernak,String kategori) async {
+  static Future<void> InsertChat(String filePath, int durasi, String idUser, String idTernak,String kategori,BuildContext context) async {
     // -NnJThg-A5k5iNE8Z1VT
     var metadata = SettableMetadata(
       contentType: "audio/mp4",
@@ -48,7 +48,9 @@ class Chat {
             "tanggal": DateTime.now().toString(),
           };
           await dbRef.child("data").push().set(data).whenComplete(() {
-            EasyLoading.showSuccess('Pesan telah di tambahkan', dismissOnTap: true, duration: Duration(seconds: 3));
+            // Navigator.pop(context);
+            EasyLoading.dismiss();
+            // EasyLoading.showSuccess('Pesan telah di tambahkan', dismissOnTap: true, duration: Duration(seconds: 3));
           });
         });
       } else {
@@ -63,7 +65,9 @@ class Chat {
           };
 
           await dbRef.child("data").push().set(data).whenComplete(() {
-            EasyLoading.showSuccess('Pesan telah di tambahkan', dismissOnTap: true, duration: Duration(seconds: 3));
+            // Navigator.pop(context);
+            EasyLoading.dismiss();
+            // EasyLoading.showSuccess('Pesan telah di tambahkan', dismissOnTap: true, duration: Duration(seconds: 3));
           });
         });
       }

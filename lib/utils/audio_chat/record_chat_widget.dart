@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_sound/public/flutter_sound_player.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
@@ -661,8 +662,10 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
   }
 
   void submitVoiceNote() async {
+    EasyLoading.show(status: 'loading...');
+
     // await recorderModule.getRecordURL(path: _path[_codec.index]!).then((value) async {
-    await Chat.InsertChat(_path[_codec.index]!, _recorderDuration.inMilliseconds, widget.idUser,widget.idTernak,widget.kategori).whenComplete(() {
+    await Chat.InsertChat(_path[_codec.index]!, _recorderDuration.inMilliseconds, widget.idUser,widget.idTernak,widget.kategori,context).whenComplete(() {
       recorderModule.stopRecorder();
       playerModule.closePlayer();
       _playerDuration = Duration.zero;
