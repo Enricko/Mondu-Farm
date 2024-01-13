@@ -20,6 +20,7 @@ class Auth {
         SharedPreferences pref = await SharedPreferences.getInstance();
         pref.setBool("isUserLoggedIn", true);
         pref.setString("id_user", key);
+        pref.setString("nama", data['nama']);
         EasyLoading.showSuccess('Login Berhasil..',
             dismissOnTap: true, duration: const Duration(seconds: 5));
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Home()));

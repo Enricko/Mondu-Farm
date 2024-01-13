@@ -1,32 +1,85 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:intl/intl.dart';
+import 'package:mondu_farm/booking.dart';
 import 'package:mondu_farm/detail_chat.dart';
 import 'package:mondu_farm/success.dart';
 import 'package:mondu_farm/utils/alerts.dart';
 import 'package:mondu_farm/utils/custom_extension.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailTernak extends StatefulWidget {
   final String uid;
   final String url;
   final String kategori;
 
-  const DetailTernak({Key? key, required this.url, required this.kategori, required this.uid}) : super(key: key);
+  const DetailTernak(
+      {Key? key, required this.url, required this.kategori, required this.uid})
+      : super(key: key);
 
   @override
   State<DetailTernak> createState() => _DetailTernakState();
 }
 
 class _DetailTernakState extends State<DetailTernak> {
+  final FlutterTts flutterTts = FlutterTts();
+  String id_user = "";
+  String nama = "";
+  String no_telepon = "";
+
   NumberFormat currencyFormatter = NumberFormat.currency(
     locale: 'id',
     symbol: 'Rp ',
     decimalDigits: 0,
   );
 
+  Future<void> playVoiceover(String text) async {
+    await flutterTts.setLanguage("id-ID");
+    await flutterTts.setPitch(1.0);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.setVoice({"name": "Karen", "locale": "id-ID"});
+
+    await flutterTts.speak(text);
+  }
+
+  Future<void> getPref() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      id_user = pref.getString('id_user')!;
+    });
+    setState(() {
+      getUserFromFirebase();
+    });
+  }
+
+  Future<void> getUserFromFirebase() async {
+    try {
+      FirebaseDatabase.instance
+          .ref()
+          .child("users")
+          .child(id_user)
+          .onValue
+          .listen((event) {
+        var snapshot = event.snapshot.value as Map;
+        nama = snapshot['nama'];
+        no_telepon = snapshot['no_telepon'];
+      });
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPref();
+  }
+
   @override
   Widget build(BuildContext context) {
+    playVoiceover("Lakukan Negosiasi atau Booking langsung");
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.kategori.title()),
@@ -55,22 +108,27 @@ class _DetailTernakState extends State<DetailTernak> {
                     .child(widget.uid)
                     .onValue,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
+                  if (snapshot.hasData &&
+                      (snapshot.data!).snapshot.value != null) {
                     Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                        (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
+                        (snapshot.data! as DatabaseEvent).snapshot.value
+                            as Map<dynamic, dynamic>);
                     return Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Expanded(child: DetailInfo(icon: "assets/icon_umur.png", value: data['usia'].toString())),
+                            Expanded(
+                                child: DetailInfo(
+                                    icon: "assets/icon_umur.png",
+                                    value: data['usia'].toString())),
                             SizedBox(
                               width: 10,
                             ),
                             Expanded(
                                 child: DetailInfo(
                               icon: "assets/icon_tinggi.png",
-                              value: data['tinggi'].toString(),
+                              value: "${data['tinggi'].toString()} M",
                             )),
                           ],
                         ),
@@ -79,19 +137,16 @@ class _DetailTernakState extends State<DetailTernak> {
                         ),
                         DetailInfo(
                           icon: "assets/icon_bobot.png",
-                          value: data['berat'].toString(),
+                          value: "${data['berat'].toString()} Kg",
                         ),
                         SizedBox(
                           height: 10,
                         ),
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: DetailInfo(
-                              icon: "assets/icon_harga.png",
-                              value: currencyFormatter.format(
-                                data['harga'],
-                              )),
-                        ),
+                        DetailInfo(
+                            icon: "assets/icon_harga.png",
+                            value: currencyFormatter.format(
+                              data['harga'],
+                            )),
                         SizedBox(
                           height: 40,
                         ),
@@ -99,7 +154,9 @@ class _DetailTernakState extends State<DetailTernak> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             IconButton(
-                                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.purple)),
                                 onPressed: () {
                                   Navigator.push(
                                     context,
@@ -114,17 +171,23 @@ class _DetailTernakState extends State<DetailTernak> {
                                 },
                                 icon: Image.asset("assets/icon_chat.png")),
                             IconButton(
-                                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.purple)),
                                 onPressed: () {
+                                  playVoiceover("Apakah anda yakin?");
                                   Alerts.showAlertYesNo(
                                     onPressYes: () async {
-                                      Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (ctx) => Success(),
-                                        ),
-                                        (route) => false,
-                                      );
+                                      Booking.insert(context, {
+                                        "id_user": id_user,
+                                        'nama': nama,
+                                        'no_telepon': no_telepon,
+                                        'id_ternak': widget.uid,
+                                        'kategori': widget.kategori,
+                                        'tanggal_booking':
+                                            DateTime.now().toString(),
+                                        'status_booking': "Sedang Di Booking",
+                                      });
                                     },
                                     onPressNo: () {
                                       Navigator.pop(context);

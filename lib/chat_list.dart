@@ -16,6 +16,7 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
   String idUser = "";
+
   Future<void> getPref() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
@@ -25,7 +26,11 @@ class _ChatListState extends State<ChatList> {
 
   Future<String> getImageFromStorage(String pathName, String kategori) {
     FirebaseStorage storage = FirebaseStorage.instance;
-    Reference ref = storage.ref().child("ternak").child(kategori.toLowerCase()).child(pathName);
+    Reference ref = storage
+        .ref()
+        .child("ternak")
+        .child(kategori.toLowerCase())
+        .child(pathName);
 
     return ref.getDownloadURL();
   }
@@ -49,216 +54,238 @@ class _ChatListState extends State<ChatList> {
         title: Text("List Chat"),
       ),
       body: SafeArea(
-        child: Expanded(
-          child: StreamBuilder(
-            stream: FirebaseDatabase.instance.ref().child("pesan").child("-Nnm_V8tHL_EsqxSsCxd").onValue,
-            builder: (context, snapshot) {
-              if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
-                // Variable data mempermudah memanggil data pada database
-                Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                    (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
+        child: StreamBuilder(
+          stream: FirebaseDatabase.instance
+              .ref()
+              .child("pesan")
+              .child("-Nnm_V8tHL_EsqxSsCxd")
+              .onValue,
+          builder: (context, snapshot) {
+            if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
+              // Variable data mempermudah memanggil data pada database
+              Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
+                  (snapshot.data! as DatabaseEvent).snapshot.value
+                      as Map<dynamic, dynamic>);
 
-                List<Map<dynamic, dynamic>> dataList = [];
-                data.forEach((key, value) {
-                  // Setiap data yang di perulangkan bakal di simpan ke dalam list
-                  final currentData = Map<String, dynamic>.from(value);
-                  // Mensetting variable dengan total lembur dan gaji)
-                  dataList.add({
-                    'uid': key,
-                    'data': currentData['data'],
-                    'kategori': currentData['kategori'],
-                    'last_chat_user': currentData['last_chat_user'],
+              List<Map<dynamic, dynamic>> dataList = [];
+              data.forEach((key, value) {
+                // Setiap data yang di perulangkan bakal di simpan ke dalam list
+                final currentData = Map<String, dynamic>.from(value);
+                // Mensetting variable dengan total lembur dan gaji)
+                dataList.add({
+                  'uid': key,
+                  'data': currentData['data'],
+                  'kategori': currentData['kategori'],
+                  'last_chat_user': currentData['last_chat_user'],
+                });
+              });
+              dataList.sort((a, b) {
+                var aDate = DateTime.parse(a["last_chat_user"]);
+                var bDate = DateTime.parse(b["last_chat_user"]);
+                return aDate.compareTo(bDate);
+              });
+              return ListView.builder(
+                itemCount: dataList.length,
+                itemBuilder: (context, index) {
+                  Future<Map<dynamic, dynamic>>? dataTernak = FirebaseDatabase
+                      .instance
+                      .ref()
+                      .child("ternak")
+                      .child("${dataList[index]["kategori"]}")
+                      .child("${dataList[index]["uid"]}")
+                      .get()
+                      .then((value) {
+                    return value.value as Map<dynamic, dynamic>;
                   });
-                });
-                dataList.sort((a, b) {
-                  var aDate = DateTime.parse(a["last_chat_user"]);
-                  var bDate = DateTime.parse(b["last_chat_user"]);
-                  return aDate.compareTo(bDate);
-                });
-                return ListView.builder(
-                  itemCount: dataList.length,
-                  itemBuilder: (context, index) {
-                    Future<Map<dynamic, dynamic>>? dataTernak = FirebaseDatabase.instance
-                        .ref()
-                        .child("ternak")
-                        .child("${dataList[index]["kategori"]}")
-                        .child("${dataList[index]["uid"]}")
-                        .get()
-                        .then((value) {
-                      return value.value as Map<dynamic, dynamic>;
-                    });
-                    return FutureBuilder(
-                      future: dataTernak,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          var data = snapshot.data!;
-                          return ListTile(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DetailChat(
-                                    idTernak: dataList[index]['uid'],
-                                    kategori: dataList[index]['kategori'],
-                                    dataTernak: data,
+                  return FutureBuilder(
+                    future: dataTernak,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        var data = snapshot.data!;
+                        return Column(
+                          children: [
+                            ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailChat(
+                                      idTernak: dataList[index]['uid'],
+                                      kategori: dataList[index]['kategori'],
+                                      dataTernak: data,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            trailing: Icon(Icons.arrow_forward_ios),
-                            tileColor: Colors.black12,
-                            title: Text("${dataList[index]['kategori'].toString().title()}"),
-                            leading: SizedBox(
-                              width: 125,
-                              height: 50,
-                              child: FutureBuilder(
-                                future: getImageFromStorage(data['gambar'], dataList[index]['kategori']),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    return Image.network(
-                                      snapshot.data!,
-                                      width: 125,
+                                );
+                              },
+                              trailing: Icon(Icons.arrow_forward_ios),
+                              tileColor: Colors.black12,
+                              leading: SizedBox(
+                                width: 125,
+                                height: 50,
+                                child: FutureBuilder(
+                                  future: getImageFromStorage(data['gambar'],
+                                      dataList[index]['kategori']),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Image.network(
+                                        snapshot.data!,
+                                        height: 130,
+                                        fit: BoxFit.fill,
+                                      );
+                                    }
+                                    if (snapshot.hasError) {
+                                      return Text("Terjadi Kesalahan");
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(),
                                     );
-                                  }
-                                  if (snapshot.hasError) {
-                                    return Text("Terjadi Kesalahan");
-                                  }
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                },
+                                  },
+                                ),
                               ),
-                            ),
-                            subtitle: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Image.asset(
-                                          "assets/icon_umur.png",
-                                          height: 20,
-                                        ),
-                                        Text(
-                                          "${data['usia']}",
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 25,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Image.asset("assets/icon_tinggi.png", height: 20),
-                                        Text("${data['tinggi']}")
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Row(
-                                  children: [
-                                    Image.asset("assets/icon_bobot.png", height: 20),
-                                    Text("${data['berat']}")
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Row(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Image.asset("assets/icon_harga.png", height: 20),
-                                        Container(
-                                          width: 130,
-                                          child: Text(
-                                            "${currencyFormatter.format(data['harga'])}",
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                        return ListTile(
-                          onTap: null,
-                          trailing: Icon(Icons.arrow_forward_ios),
-                          tileColor: Colors.black12,
-                          title: Text("---"),
-                          leading: SizedBox(
-                            width: 125,
-                            height: 50,
-                            child: Container(),
-                          ),
-                          subtitle: Column(
-                            children: [
-                              Row(
+                              subtitle: Row(
                                 children: [
-                                  Row(
+                                  Column(
                                     children: [
                                       Image.asset(
                                         "assets/icon_umur.png",
                                         height: 20,
                                       ),
-                                      Text(
-                                        "---",
-                                      )
+                                      SizedBox(
+                                        height: 3,
+                                      ),
+                                      Image.asset("assets/icon_tinggi.png",
+                                          height: 20),
+                                      SizedBox(
+                                        height: 3,
+                                      ),
+                                      Image.asset("assets/icon_bobot.png",
+                                          height: 20),
+                                      SizedBox(
+                                        height: 3,
+                                      ),
+                                      Image.asset("assets/icon_harga.png",
+                                          height: 20),
                                     ],
                                   ),
                                   SizedBox(
-                                    width: 25,
+                                    width: 10,
                                   ),
-                                  Row(
-                                    children: [Image.asset("assets/icon_tinggi.png", height: 20), Text("---")],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Row(
-                                children: [Image.asset("assets/icon_bobot.png", height: 20), Text("---")],
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Row(
-                                children: [
-                                  Row(
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Image.asset("assets/icon_harga.png", height: 20),
                                       Text(
-                                        "Rp. ---",
-                                        maxLines: 3,
-                                      )
+                                        "${data['usia']} Tahun",
+                                      ),
+                                      SizedBox(
+                                        height: 3,
+                                      ),
+                                      Text("${data['tinggi']} Meter"),
+                                      SizedBox(
+                                        height: 3,
+                                      ),
+                                      Text("${data['berat']} Kg"),
+                                      SizedBox(
+                                        height: 3,
+                                      ),
+                                      Text(
+                                        "${currencyFormatter.format(data['harga'])}",
+                                      ),
                                     ],
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            )
+                          ],
                         );
-                      },
-                    );
-                  },
-                );
-              }
-              if (snapshot.hasData) {
-                return Center(
-                  child: Text("Kosong"),
-                );
-              }
-              return Center(
-                child: CircularProgressIndicator(),
+                      }
+                      return Column(
+                        children: [
+                          ListTile(
+                            onTap: null,
+                            trailing: Icon(Icons.arrow_forward_ios),
+                            tileColor: Colors.black12,
+                            leading: SizedBox(
+                              width: 125,
+                              height: 50,
+                              child: Image.asset("assets/placeholder.png"),
+                            ),
+                            subtitle: Row(
+                              children: [
+                                Column(
+                                  children: [
+                                    Image.asset(
+                                      "assets/icon_umur.png",
+                                      height: 20,
+                                    ),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Image.asset("assets/icon_tinggi.png",
+                                        height: 20),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Image.asset("assets/icon_bobot.png",
+                                        height: 20),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Image.asset("assets/icon_harga.png",
+                                        height: 20),
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      " - Tahun",
+                                    ),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text(" - Meter"),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text(" - Kg"),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text(
+                                      "Rp -",
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          )
+                        ],
+                      );
+                    },
+                  );
+                },
               );
-            },
-          ),
+            }
+            if (snapshot.hasData) {
+              return Center(
+                child: Text("Kosong"),
+              );
+            }
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          },
         ),
       ),
     );
