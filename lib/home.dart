@@ -8,6 +8,7 @@ import 'package:mondu_farm/list_booking.dart';
 import 'package:mondu_farm/list_kategori.dart';
 import 'package:mondu_farm/chat_list.dart';
 import 'package:mondu_farm/login_page.dart';
+import 'package:mondu_farm/utils/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
@@ -99,109 +100,114 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     playVoiceover("Selamat Datang , Silahkan memilih kategori ternak ");
     return Scaffold(
+      backgroundColor: Warna.latar,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Icon(Icons.person),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        nama ?? "",
-                        style: TextStyle(fontSize: 16),
-                      )
-
-                    ],
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        logout(context);
-                      },
-                      icon: Icon(Icons.logout))
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: Card(
-                  child: Image.asset(
-                    "assets/banner_home.jpg",
-                    fit: BoxFit.fill,
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Icon(Icons.person),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          nama ?? "",
+                          style: TextStyle(fontSize: 16),
+                        )
+            
+                      ],
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          logout(context);
+                        },
+                        icon: Icon(Icons.logout))
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.asset(
+                      "assets/banner_home.jpg",
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              GridView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Number of columns
-                  crossAxisSpacing: 5, // Spacing between columns
-                  mainAxisSpacing: 5, // Spacing between rows
+                SizedBox(
+                  height: 20,
                 ),
-                itemCount: 4, // Number of items
-                itemBuilder: (context, index) {
-                  // Return a container for each item
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (ctx) => (index == 0)
-                                  ? CategoryList(kategori: 'Sapi',)
-                                  : (index == 1)
-                                      ? CategoryList(kategori: "Kuda",)
-                                      : (index == 2)
-                                          ? CategoryList(kategori: "Kerbau",)
-                                          : CategoryList(kategori: "Kambing",)));
-                    },
-                    child: Card(
-                        child: Image.asset(
-                      "assets/category_${index}.jpg",
-                      fit: BoxFit.fill,
-                    )),
-                  );
-                },
-              ),
-              SizedBox(height: 40,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.purple)),
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (ctx)=>ChatList()));
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, // Number of columns
+                    crossAxisSpacing: 15, // Spacing between columns
+                    mainAxisSpacing: 15, // Spacing between rows
+                  ),
+                  itemCount: 4, // Number of items
+                  itemBuilder: (context, index) {
+                    // Return a container for each item
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (ctx) => (index == 0)
+                                    ? CategoryList(kategori: 'Sapi',)
+                                    : (index == 1)
+                                        ? CategoryList(kategori: "Kuda",)
+                                        : (index == 2)
+                                            ? CategoryList(kategori: "Kerbau",)
+                                            : CategoryList(kategori: "Kambing",)));
                       },
-                      icon: Image.asset("assets/icon_chat.png")),
-                  IconButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.purple)),
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (ctx)=>ListBooking()));
-                      },
-                      icon: Image.asset("assets/icon_booking.png")),
-                ],
-              ),
-              SizedBox(height: 20,)
-            ],
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                          child: Image.asset(
+                        "assets/category_${index}.jpg",
+                        fit: BoxFit.cover,
+                      )),
+                    );
+                  },
+                ),
+                SizedBox(height: 40,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.purple)),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (ctx)=>ChatList()));
+                        },
+                        icon: Image.asset("assets/icon_chat.png")),
+                    IconButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.purple)),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (ctx)=>ListBooking()));
+                        },
+                        icon: Image.asset("assets/icon_booking.png")),
+                  ],
+                ),
+                SizedBox(height: 20,)
+              ],
+            ),
           ),
         ),
       ),

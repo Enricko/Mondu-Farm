@@ -1,12 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:intl/date_symbol_data_file.dart';
 
 import 'firebase_options.dart';
 import 'login_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // initializeDateFormatting('en_US');
+  // await initializeDateFormatting('id', null);
 
   // Initialize Firebase
   await Firebase.initializeApp(

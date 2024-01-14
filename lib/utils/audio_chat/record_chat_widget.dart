@@ -691,8 +691,9 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
       alignment: Alignment.center,
       height: 50,
       width: width,
-      decoration: BoxDecoration(color: Warna.ungu, borderRadius: BorderRadius.circular(10)),
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      color: Warna.ungu,
+      // decoration: BoxDecoration(color: Warna.ungu, borderRadius: BorderRadius.circular(10)),
+      // margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: Row(
@@ -702,7 +703,7 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
             // Text(_mRecorder!.isRecording ? 'Recording in progress' : 'Recorder is stopped'),
             IconButton(
               onPressed: onStartPlayerPressed() ?? onPauseResumePlayerPressed(),
-              icon: Icon(onPlayed ? Icons.play_arrow : Icons.pause),
+              icon: Icon(onPlayed ? Icons.play_arrow : Icons.pause,size: 30,color: Colors.black,),
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -735,16 +736,13 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
               onPressed: onStartRecorderPressed(),
               icon: Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Warna.biruUngu,
                   borderRadius: BorderRadius.circular(50),
                 ),
-                child: Icon(!onRecorded ? Icons.mic : Icons.mic_off),
+                child: Icon(!onRecorded ? Icons.mic : Icons.mic_off,size: 30,),
               ),
-            ),
-            SizedBox(
-              width: 10,
             ),
             IconButton(
               onPressed: !readySubmit
@@ -755,12 +753,12 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
               disabledColor: Colors.black.withOpacity(0.5),
               icon: Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: !readySubmit ? Warna.biruUngu.withOpacity(0.5) : Warna.biruUngu,
                   borderRadius: BorderRadius.circular(50),
                 ),
-                child: Icon(Icons.send),
+                child: Icon(Icons.send,size: 30),
               ),
             ),
           ],

@@ -10,16 +10,15 @@ class Success extends StatelessWidget {
   Future<void> playVoiceover(String text) async {
     await flutterTts.setLanguage("id-ID");
     await flutterTts.setPitch(1.0);
-    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.setSpeechRate(0.4);
 
     await flutterTts.speak(text);
   }
 
   @override
   Widget build(BuildContext context) {
-    playVoiceover("Pesanan Anda sedang di proses, segera datang ke Peternakan dan ambil ternak anda");
+    playVoiceover("Pesanan Anda sedang di proses, Nota Anda Segera Dikirim");
     return Scaffold(
-
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

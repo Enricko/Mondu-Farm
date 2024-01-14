@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mondu_farm/utils/color.dart';
 import 'package:mondu_farm/utils/custom_extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,14 +52,16 @@ class _ChatListState extends State<ChatList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("List Chat"),
+        backgroundColor: Warna.latar,
       ),
+      backgroundColor: Warna.latar,
       body: SafeArea(
         child: StreamBuilder(
           stream: FirebaseDatabase.instance
               .ref()
               .child("pesan")
-              .child("-Nnm_V8tHL_EsqxSsCxd")
+              .child(idUser)
+              // .child("-Nnm_V8tHL_EsqxSsCxd")  -Hanya Untuk Testing
               .onValue,
           builder: (context, snapshot) {
             if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {

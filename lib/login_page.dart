@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mondu_farm/utils/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'auth/login.dart';
@@ -50,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Warna.latar,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -57,9 +59,11 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset("assets/icon_handphone.png"),
+              SizedBox(height: 10,),
               Card(
+                  elevation: 5,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 25),
                   child: Column(
                     children: [
                       Form(

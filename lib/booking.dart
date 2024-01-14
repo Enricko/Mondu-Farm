@@ -23,6 +23,7 @@ class Booking {
         "kategori": data['kategori'].toString(),
         "tanggal_booking": data['tanggal_booking'].toString(),
         "status_booking": data['status_booking'].toString(),
+        "id_nota": "null",
       }).whenComplete(() {
         EasyLoading.showSuccess('Booking Berhasil',
             dismissOnTap: true, duration: const Duration(seconds: 5));

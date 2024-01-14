@@ -31,6 +31,7 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
   Future<void> _initAudioPlayer() async {
     try {
       await _audioPlayer.setUrl(widget.data['pesan']);
+      await _audioPlayer.setVolume(1.0);
       _audioPlayer.durationStream.listen((duration) {
         setState(() {
           _sliderValue = 0.0;
@@ -96,7 +97,7 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
               children: [
                 IconButton(
                   onPressed: _togglePlayer,
-                  icon: Icon(_audioPlayer.playerState.playing ? Icons.pause : Icons.play_arrow),
+                  icon: Icon(_audioPlayer.playerState.playing ? Icons.pause : Icons.play_arrow,color: Colors.black,),
                 ),
                 Container(
                   child: Row(

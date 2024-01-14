@@ -7,6 +7,7 @@ import 'package:mondu_farm/booking.dart';
 import 'package:mondu_farm/detail_chat.dart';
 import 'package:mondu_farm/success.dart';
 import 'package:mondu_farm/utils/alerts.dart';
+import 'package:mondu_farm/utils/color.dart';
 import 'package:mondu_farm/utils/custom_extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -82,137 +83,143 @@ class _DetailTernakState extends State<DetailTernak> {
     playVoiceover("Lakukan Negosiasi atau Booking langsung");
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.kategori.title()),
+        backgroundColor: Warna.latar,
       ),
+        backgroundColor: Warna.latar,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(25),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 300,
-                width: double.infinity,
-                child: Image.network(
-                  widget.url,
-                  fit: BoxFit.contain,
+          padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 15),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 300,
+                  width: double.infinity,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      widget.url,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              StreamBuilder(
-                stream: FirebaseDatabase.instance
-                    .ref()
-                    .child("ternak")
-                    .child(widget.kategori.toLowerCase())
-                    .child(widget.uid)
-                    .onValue,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData &&
-                      (snapshot.data!).snapshot.value != null) {
-                    Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                        (snapshot.data! as DatabaseEvent).snapshot.value
-                            as Map<dynamic, dynamic>);
-                    return Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Expanded(
-                                child: DetailInfo(
-                                    icon: "assets/icon_umur.png",
-                                    value: data['usia'].toString())),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                                child: DetailInfo(
-                              icon: "assets/icon_tinggi.png",
-                              value: "${data['tinggi'].toString()} M",
-                            )),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        DetailInfo(
-                          icon: "assets/icon_bobot.png",
-                          value: "${data['berat'].toString()} Kg",
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        DetailInfo(
-                            icon: "assets/icon_harga.png",
-                            value: currencyFormatter.format(
-                              data['harga'],
-                            )),
-                        SizedBox(
-                          height: 40,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            IconButton(
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Colors.purple)),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DetailChat(
-                                        idTernak: snapshot.data!.snapshot.key!,
-                                        kategori: widget.kategori,
-                                        dataTernak: data,
+                SizedBox(
+                  height: 15,
+                ),
+                StreamBuilder(
+                  stream: FirebaseDatabase.instance
+                      .ref()
+                      .child("ternak")
+                      .child(widget.kategori.toLowerCase())
+                      .child(widget.uid)
+                      .onValue,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData &&
+                        (snapshot.data!).snapshot.value != null) {
+                      Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
+                          (snapshot.data! as DatabaseEvent).snapshot.value
+                              as Map<dynamic, dynamic>);
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(
+                                  child: DetailInfo(
+                                      icon: "assets/icon_umur.png",
+                                      value: data['usia'].toString())),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                  child: DetailInfo(
+                                icon: "assets/icon_tinggi.png",
+                                value: "${data['tinggi'].toString()} M",
+                              )),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          DetailInfo(
+                            icon: "assets/icon_bobot.png",
+                            value: "${data['berat'].toString()} Kg",
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          DetailInfo(
+                              icon: "assets/icon_harga.png",
+                              value: currencyFormatter.format(
+                                data['harga'],
+                              )),
+                          SizedBox(
+                            height: 40,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              IconButton(
+                                  style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(
+                                          Colors.purple)),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailChat(
+                                          idTernak: snapshot.data!.snapshot.key!,
+                                          kategori: widget.kategori,
+                                          dataTernak: data,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                                icon: Image.asset("assets/icon_chat.png")),
-                            IconButton(
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Colors.purple)),
-                                onPressed: () {
-                                  playVoiceover("Apakah anda yakin?");
-                                  Alerts.showAlertYesNo(
-                                    onPressYes: () async {
-                                      Booking.insert(context, {
-                                        "id_user": id_user,
-                                        'nama': nama,
-                                        'no_telepon': no_telepon,
-                                        'id_ternak': widget.uid,
-                                        'kategori': widget.kategori,
-                                        'tanggal_booking':
-                                            DateTime.now().toString(),
-                                        'status_booking': "Sedang Di Booking",
-                                      });
-                                    },
-                                    onPressNo: () {
-                                      Navigator.pop(context);
-                                    },
-                                    context: context,
-                                  );
-                                },
-                                icon: Image.asset("assets/icon_booking.png")),
-                          ],
-                        )
-                      ],
+                                    );
+                                  },
+                                  icon: Image.asset("assets/icon_chat.png")),
+                              IconButton(
+                                  style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(
+                                          Colors.purple)),
+                                  onPressed: () {
+                                    playVoiceover("Apakah anda yakin?");
+                                    Alerts.showAlertYesNo(
+                                      onPressYes: () async {
+                                        Booking.insert(context, {
+                                          "id_user": id_user,
+                                          'nama': nama,
+                                          'no_telepon': no_telepon,
+                                          'id_ternak': widget.uid,
+                                          'kategori': widget.kategori,
+                                          'tanggal_booking':
+                                              DateTime.now().toString(),
+                                          'status_booking': "Sedang Di Booking",
+                                        });
+                                      },
+                                      onPressNo: () {
+                                        Navigator.pop(context);
+                                      },
+                                      context: context,
+                                    );
+                                  },
+                                  icon: Image.asset("assets/icon_booking.png")),
+                            ],
+                          )
+                        ],
+                      );
+                    }
+                    if (snapshot.hasData) {
+                      return Center(
+                          child: Text(
+                        "Ternak Tidak Tersedia",
+                      ));
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
                     );
-                  }
-                  if (snapshot.hasData) {
-                    return Center(
-                        child: Text(
-                      "Ternak Tidak Tersedia",
-                    ));
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              ),
-            ],
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

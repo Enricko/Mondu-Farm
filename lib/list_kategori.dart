@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:mondu_farm/detail_ternak.dart';
+import 'package:mondu_farm/utils/color.dart';
 import 'package:mondu_farm/utils/custom_extension.dart';
 
 class CategoryList extends StatefulWidget {
@@ -40,8 +41,9 @@ class _CategoryListState extends State<CategoryList> {
     playVoiceover('Silahkan memilih ${widget.kategori} yang di inginkan');
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.kategori.title()}"),
+          backgroundColor: Warna.latar,
       ),
+      backgroundColor: Warna.latar,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10,),
@@ -51,8 +53,9 @@ class _CategoryListState extends State<CategoryList> {
               SizedBox(height: 20,),
               SizedBox(
                 width: double.infinity,
-                child: Card(
-                  child: Image.asset("assets/banner_category.png",fit: BoxFit.fill,),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset("assets/banner_category.png",fit: BoxFit.cover,),
                 ),
               ),
               SizedBox(height: 20,),
@@ -83,8 +86,8 @@ class _CategoryListState extends State<CategoryList> {
                         return GridView.builder(
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2, // Number of columns
-                            crossAxisSpacing: 5, // Spacing between columns
-                            mainAxisSpacing: 5, // Spacing between rows
+                            crossAxisSpacing: 10, // Spacing between columns
+                            mainAxisSpacing: 10, // Spacing between rows
                           ),
                           itemCount: dataList.length, // Number of items
                           itemBuilder: (context, index){
@@ -96,7 +99,8 @@ class _CategoryListState extends State<CategoryList> {
                                       onTap: (){
                                         Navigator.push(context, MaterialPageRoute(builder: (ctx) => DetailTernak(url: snapshot.data!, kategori: widget.kategori.toLowerCase(), uid: dataList[index]['key'],)));
                                       },
-                                      child: Card(
+                                      child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(10),
                                           child: Image.network( snapshot.data!,fit: BoxFit.fill)));
                                 }
                                 if (snapshot.hasError) {
