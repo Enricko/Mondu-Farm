@@ -340,7 +340,7 @@ class _DetailChatState extends State<DetailChat> {
       //   ],
       // ),
       bottomNavigationBar: SizedBox(
-        height: 80,
+        height: 125,
         child: RecordChatWidget(
           idUser: idUser,
           idTernak: widget.idTernak,
