@@ -658,18 +658,25 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
     });
   }
 
+  void deleteVoice() async {
+    recorderModule.stopRecorder();
+    playerModule.closePlayer();
+    _playerDuration = Duration.zero;
+    _recorderDuration = Duration.zero;
+    sliderCurrentPosition = 0;
+    maxDuration = 1;
+    readySubmit = false;
+    setState(() {});
+  }
+
   void submitVoiceNote() async {
     EasyLoading.show(status: 'loading...');
 
     // await recorderModule.getRecordURL(path: _path[_codec.index]!).then((value) async {
-    await Chat.InsertChat(_path[_codec.index]!, _recorderDuration.inMilliseconds, widget.idUser,widget.idTernak,widget.kategori,context).whenComplete(() {
-      recorderModule.stopRecorder();
-      playerModule.closePlayer();
-      _playerDuration = Duration.zero;
-      _recorderDuration = Duration.zero;
-      sliderCurrentPosition = 0;
-      maxDuration = 1;
-      readySubmit = false;
+    await Chat.InsertChat(_path[_codec.index]!, _recorderDuration.inMilliseconds, widget.idUser, widget.idTernak,
+            widget.kategori, context)
+        .whenComplete(() {
+      deleteVoice();
       setState(() {});
     });
   }
@@ -686,80 +693,104 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
     var width = MediaQuery.of(context).size.width;
     return Container(
       alignment: Alignment.center,
-      height: 50,
       width: width,
-      color: Warna.ungu,
-      // decoration: BoxDecoration(color: Warna.ungu, borderRadius: BorderRadius.circular(10)),
-      // margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Text(_mRecorder!.isRecording ? 'Recording in progress' : 'Recorder is stopped'),
-            IconButton(
-              onPressed: onStartPlayerPressed() ?? onPauseResumePlayerPressed(),
-              icon: Icon(onPlayed ? Icons.play_arrow : Icons.pause,size: 30,color: Colors.black,),
-            ),
-            Row(
+      decoration: BoxDecoration(color: Warna.ungu, borderRadius: BorderRadius.circular(10)),
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Slider(
-                  value: min(sliderCurrentPosition, maxDuration),
-                  min: 0.0,
-                  max: maxDuration,
-                  onChanged: (value) async {
-                    await seekToPlayer(value.toInt());
-                  },
-                  divisions: maxDuration == 0.0 ? 1 : maxDuration.toInt(),
+                IconButton(
+                  onPressed: onStartPlayerPressed() ?? onPauseResumePlayerPressed(),
+                  icon: Icon(onPlayed ? Icons.play_arrow : Icons.pause),
+                ),
+                Expanded(
+                  // constraints: BoxConstraints(minWidth: 100, maxWidth: 1000),
+                  child: Slider(
+                    value: min(sliderCurrentPosition, maxDuration),
+                    min: 0.0,
+                    max: maxDuration,
+                    onChanged: (value) async {
+                      await seekToPlayer(value.toInt());
+                    },
+                    divisions: maxDuration == 0.0 ? 1 : maxDuration.toInt(),
+                  ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("${_formatDuration(_playerDuration)}"),
-                    Divider(color: Colors.black.withOpacity(0.3), height: 1),
-                    Text("${_formatDuration(_recorderDuration)}"),
+                    Text("${_formatDuration(onPlayed ? _recorderDuration : _playerDuration)}"),
                   ],
                 ),
               ],
             ),
-            SizedBox(
-              width: 5,
-            ),
-            IconButton(
-              onPressed: onStartRecorderPressed(),
-              icon: Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Warna.biruUngu,
-                  borderRadius: BorderRadius.circular(50),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Text(_mRecorder!.isRecording ? 'Recording in progress' : 'Recorder is stopped'),
+              IconButton(
+                onPressed: !readySubmit
+                    ? null
+                    : () {
+                        deleteVoice();
+                      },
+                icon: Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: !readySubmit ? Warna.biruUngu.withOpacity(0.5) : Warna.biruUngu,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Icon(
+                    Icons.delete_forever,
+                  ),
                 ),
-                child: Icon(!onRecorded ? Icons.mic : Icons.mic_off,size: 30,),
               ),
-            ),
-            IconButton(
-              onPressed: !readySubmit
-                  ? null
-                  : () {
-                      submitVoiceNote();
-                    },
-              disabledColor: Colors.black.withOpacity(0.5),
-              icon: Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: !readySubmit ? Warna.biruUngu.withOpacity(0.5) : Warna.biruUngu,
-                  borderRadius: BorderRadius.circular(50),
+              SizedBox(
+                width: 5,
+              ),
+              IconButton(
+                onPressed: onStartRecorderPressed(),
+                icon: Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Warna.biruUngu,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Icon(!onRecorded ? Icons.mic : Icons.pause),
                 ),
-                child: Icon(Icons.send,size: 30),
               ),
-            ),
-          ],
-        ),
+              SizedBox(
+                width: 10,
+              ),
+              IconButton(
+                onPressed: !readySubmit
+                    ? null
+                    : () {
+                        submitVoiceNote();
+                      },
+                disabledColor: Colors.black.withOpacity(0.5),
+                icon: Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: !readySubmit ? Warna.biruUngu.withOpacity(0.5) : Warna.biruUngu,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Icon(Icons.send),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
