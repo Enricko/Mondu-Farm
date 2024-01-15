@@ -24,9 +24,9 @@ class DetailNota extends StatefulWidget {
 }
 
 class _DetailNotaState extends State<DetailNota> {
-  formatteddate(String date) {
+  String formatteddate(String date) {
     var formatteddate =
-    DateFormat('d MMMM y', 'id_ID').format(DateTime.parse(date));
+    DateFormat('d MMMM y').format(DateTime.parse(date));
     return formatteddate;
   }
 
@@ -145,12 +145,12 @@ class _DetailNotaState extends State<DetailNota> {
                           height: 10,
                         ),
                         DetailInfo(
-                            icon: "assets/icon_kalender.png", value: "${data['tanggal_booking']}"),
+                            icon: "assets/icon_kalender.png", value: "${formatteddate(data['tanggal_booking'])}"),
                         SizedBox(
                           height: 10,
                         ),
                         DetailInfo(
-                            icon: "assets/icon_truk.png", value: "${DateTime.parse(data['tanggal_booking']).add(Duration(days: 2))}"),
+                            icon: "assets/icon_truk.png", value: "${formatteddate(DateTime.parse(data['tanggal_booking']).add(Duration(days: 2)).toString())}"),
                       ],
                     );
                   }

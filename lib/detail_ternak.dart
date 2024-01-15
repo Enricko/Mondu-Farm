@@ -16,9 +16,7 @@ class DetailTernak extends StatefulWidget {
   final String url;
   final String kategori;
 
-  const DetailTernak(
-      {Key? key, required this.url, required this.kategori, required this.uid})
-      : super(key: key);
+  const DetailTernak({Key? key, required this.url, required this.kategori, required this.uid}) : super(key: key);
 
   @override
   State<DetailTernak> createState() => _DetailTernakState();
@@ -57,12 +55,7 @@ class _DetailTernakState extends State<DetailTernak> {
 
   Future<void> getUserFromFirebase() async {
     try {
-      FirebaseDatabase.instance
-          .ref()
-          .child("users")
-          .child(id_user)
-          .onValue
-          .listen((event) {
+      FirebaseDatabase.instance.ref().child("users").child(id_user).onValue.listen((event) {
         var snapshot = event.snapshot.value as Map;
         nama = snapshot['nama'];
         no_telepon = snapshot['no_telepon'];
@@ -85,10 +78,10 @@ class _DetailTernakState extends State<DetailTernak> {
       appBar: AppBar(
         backgroundColor: Warna.latar,
       ),
-        backgroundColor: Warna.latar,
+      backgroundColor: Warna.latar,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -114,20 +107,15 @@ class _DetailTernakState extends State<DetailTernak> {
                       .child(widget.uid)
                       .onValue,
                   builder: (context, snapshot) {
-                    if (snapshot.hasData &&
-                        (snapshot.data!).snapshot.value != null) {
+                    if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
                       Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                          (snapshot.data! as DatabaseEvent).snapshot.value
-                              as Map<dynamic, dynamic>);
+                          (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
                       return Column(
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Expanded(
-                                  child: DetailInfo(
-                                      icon: "assets/icon_umur.png",
-                                      value: data['usia'].toString())),
+                              Expanded(child: DetailInfo(icon: "assets/icon_umur.png", value: data['usia'].toString())),
                               SizedBox(
                                 width: 10,
                               ),
@@ -160,9 +148,7 @@ class _DetailTernakState extends State<DetailTernak> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               IconButton(
-                                  style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all(
-                                          Colors.purple)),
+                                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
@@ -177,9 +163,7 @@ class _DetailTernakState extends State<DetailTernak> {
                                   },
                                   icon: Image.asset("assets/icon_chat.png")),
                               IconButton(
-                                  style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all(
-                                          Colors.purple)),
+                                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
                                   onPressed: () {
                                     playVoiceover("Apakah anda yakin?");
                                     Alerts.showAlertYesNo(
@@ -190,8 +174,7 @@ class _DetailTernakState extends State<DetailTernak> {
                                           'no_telepon': no_telepon,
                                           'id_ternak': widget.uid,
                                           'kategori': widget.kategori,
-                                          'tanggal_booking':
-                                              DateTime.now().toString(),
+                                          'tanggal_booking': DateTime.now().toString(),
                                           'status_booking': "Sedang Di Booking",
                                         });
                                       },
@@ -253,9 +236,15 @@ class DetailInfo extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Image.asset(icon, height: 60),
-            Text(
-              value,
-              style: TextStyle(fontSize: 30, color: Colors.white),
+            Expanded(
+              
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  value,
+                  style: TextStyle(fontSize: 30, color: Colors.white),
+                ),
+              ),
             )
           ],
         ));

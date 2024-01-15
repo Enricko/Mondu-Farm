@@ -22,9 +22,9 @@ class _ListBookingState extends State<ListBooking> {
     });
   }
 
-  formatteddate(String date) {
+  String formatteddate(String date) {
     var formatteddate =
-        DateFormat('d MMMM y', 'id').format(DateTime.parse(date));
+        DateFormat('d MMMM y').format(DateTime.parse(date));
     return formatteddate;
   }
 
@@ -68,8 +68,7 @@ class _ListBookingState extends State<ListBooking> {
                     children: [
                       ListTile(
                         title: Text(filteredList[index]["kategori"]),
-                        // subtitle: Text(formatteddate(
-                        //     filteredList[index]["tanggal_booking"]).toString()),
+                        subtitle: Text("${formatteddate(filteredList[index]["tanggal_booking"].toString())}"),
                         trailing: (filteredList[index]['id_nota'] == "null")
                             ? Text(
                                 "Sedang di Proses",

@@ -14,8 +14,6 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:typed_data' show Uint8List;
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart' show DateFormat;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path_provider/path_provider.dart';
 
@@ -178,7 +176,6 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
     await playerModule.openPlayer();
     await playerModule.setSubscriptionDuration(Duration(milliseconds: 10));
     await recorderModule.setSubscriptionDuration(Duration(milliseconds: 10));
-    await initializeDateFormatting();
     await setCodec(_codec);
   }
 
