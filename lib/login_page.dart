@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:mondu_farm/utils/color.dart';
+import 'package:mondu_farm/utils/voice_over.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'auth/login.dart';
@@ -19,6 +21,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
+  final FlutterTts flutterTts = FlutterTts();
 
   final formkey = GlobalKey<FormState>();
   bool ignorePointer = false;
@@ -33,6 +36,13 @@ class _LoginPageState extends State<LoginPage> {
       };
       Auth.login(data, context);
   }
+   Future<void> playVoiceover(String text) async {
+    await flutterTts.setLanguage("id-ID");
+    await flutterTts.setPitch(1.0);
+    await flutterTts.setSpeechRate(0.5);
+
+    await flutterTts.speak(text);
+  }
 
   void cekUser()async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -45,11 +55,16 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void initState() {
-    cekUser();
+
     super.initState();
+    cekUser();
+    // flutterTts.setLanguage("id-ID");
+    // flutterTts.setPitch(1.0);
+    // flutterTts.setSpeechRate(0.5);
   }
   @override
   Widget build(BuildContext context) {
+    flutterTts.speak("mamamaiwa ko daftar melalui Isi ngara ndang nomor telepon");
     return Scaffold(
         backgroundColor: Warna.latar,
       body: SafeArea(
@@ -58,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/icon_handphone.png"),
+              Image.asset("assets/icon_handphone.png",scale: 0.8,),
               SizedBox(height: 10,),
               Card(
                   elevation: 5,
@@ -72,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                           children: [
                             Row(
                               children: [
-                                Image.asset("assets/icon_nama.png",height: 50),
+                                Image.asset("assets/icon_nama.png",scale: 1.1,),
                                 SizedBox(width: 5,),
                                 Expanded(
                                   child: TextFormField(
@@ -89,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                                     decoration: InputDecoration(
                                       filled: true,
                                       fillColor: const Color(0xFFFCFDFE),
-                                      hintText: "Nama Lengkap",
+                                      hintText: "Mond**",
                                       hintStyle: const TextStyle(
                                         color: Color(0xFF696F79),
                                         fontSize: 14,
@@ -117,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                             SizedBox(height: 20,),
                             Row(
                               children: [
-                                Image.asset("assets/icon_notelepon.png",height: 50),
+                                Image.asset("assets/icon_notelepon.png",scale: 0.7,),
                                 SizedBox(width: 5,),
                                 Expanded(
                                   child: TextFormField(
@@ -127,14 +142,14 @@ class _LoginPageState extends State<LoginPage> {
                                       if (value == null ||
                                           value.isEmpty ||
                                           value == "") {
-                                        return "Nama Lengkap harus di isi!";
+                                        return "Nomor Telepon harus di isi!";
                                       }
                                       return null;
                                     },
                                     decoration: InputDecoration(
                                       filled: true,
                                       fillColor: const Color(0xFFFCFDFE),
-                                      hintText: "Nomor Telepon",
+                                      hintText: "0851********",
                                       hintStyle: const TextStyle(
                                         color: Color(0xFF696F79),
                                         fontSize: 14,
@@ -182,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                               login();
                             }
 
-                          }, child: Text(""),),
+                          }, child: Icon(Icons.arrow_forward,color: Colors.white,),),
                       ),
                     ],
                   ),

@@ -123,17 +123,19 @@ class _ChatListState extends State<ChatList> {
                               trailing: Icon(Icons.arrow_forward_ios),
                               tileColor: Colors.black12,
                               leading: SizedBox(
-                                width: 125,
-                                height: 50,
+                                width: 120,
+                                height: 100,
                                 child: FutureBuilder(
                                   future: getImageFromStorage(data['gambar'],
                                       dataList[index]['kategori']),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      return Image.network(
-                                        snapshot.data!,
-                                        height: 130,
-                                        fit: BoxFit.fill,
+                                      return ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: Image.network(
+                                          snapshot.data!,
+                                          fit: BoxFit.fill,
+                                        ),
                                       );
                                     }
                                     if (snapshot.hasError) {

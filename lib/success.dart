@@ -17,7 +17,7 @@ class Success extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    playVoiceover("Pesanan Anda sedang di proses, Nota Anda Segera Dikirim");
+    playVoiceover("napa pesanmu talanga proses ndanya");
     return Scaffold(
       body: Center(
         child: Column(

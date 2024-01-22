@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,7 @@ class DetailChat extends StatefulWidget {
 
 class _DetailChatState extends State<DetailChat> {
   String idUser = "";
+  bool isRecord = false;
 
   Future<void> getPref() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -52,8 +55,11 @@ class _DetailChatState extends State<DetailChat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Warna.latar,
+        centerTitle: true,
         title: Text("Detail Chat"),
       ),
+      backgroundColor: Warna.latar,
       body:
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -339,14 +345,46 @@ class _DetailChatState extends State<DetailChat> {
       //     // ),
       //   ],
       // ),
-      bottomNavigationBar: SizedBox(
-        height: 125,
-        child: RecordChatWidget(
-          idUser: idUser,
-          idTernak: widget.idTernak,
-          kategori: widget.kategori,
-        ),
-      ),
+      bottomNavigationBar: RecordChatWidget(
+        idUser: idUser,
+        idTernak: widget.idTernak,
+        kategori: widget.kategori,
+      )
+        //   : Container(
+        // color: Warna.ungu,
+        // height: 100,
+        // width: double.infinity,
+        // padding: EdgeInsets.all(10),
+        // child: Row(
+        //   children: [
+        //     IconButton(
+        //       onPressed: (){},
+        //       icon: Icon(Icons.play_arrow,color: Colors.white,),
+        //     ),
+        //     Expanded(
+        //       // constraints: BoxConstraints(minWidth: 100, maxWidth: 1000),
+        //       child: Slider(
+        //         value: min(0.0, 1.0),
+        //         min: 0.0,
+        //         max: 1.0,
+        //         onChanged: (value)  {
+        //           null;
+        //         },
+        //         divisions: 1.0 == 0.0 ? 1 : 1.0.toInt(),
+        //       ),
+        //     ),
+        //     Text("00.00",style: TextStyle(color: Colors.white),),
+        //     SizedBox(width: 20,),
+        //     IconButton(
+        //         style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white)),
+        //         onPressed: (){
+        //           setState(() {
+        //             isRecord = true;
+        //           });
+        //         }, icon: Icon(Icons.mic,size: 35,))
+        //   ],
+        // ),
+      // ),
     );
   }
 }

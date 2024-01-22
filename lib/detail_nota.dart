@@ -25,8 +25,7 @@ class DetailNota extends StatefulWidget {
 
 class _DetailNotaState extends State<DetailNota> {
   String formatteddate(String date) {
-    var formatteddate =
-    DateFormat('d MMMM y').format(DateTime.parse(date));
+    var formatteddate = DateFormat('d MMMM y').format(DateTime.parse(date));
     return formatteddate;
   }
 
@@ -34,15 +33,16 @@ class _DetailNotaState extends State<DetailNota> {
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Nota"),
         centerTitle: true,
         backgroundColor: Warna.latar,
       ),
+      backgroundColor: Warna.latar,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: SingleChildScrollView(
@@ -59,7 +59,7 @@ class _DetailNotaState extends State<DetailNota> {
                     ),
                     Container(
                       width: 170,
-                      color: Warna.abuabu,
+                      color: Colors.white,
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       child: Center(child: Text(widget.nama)),
@@ -79,7 +79,7 @@ class _DetailNotaState extends State<DetailNota> {
                   ),
                   Container(
                     width: 170,
-                    color: Warna.abuabu,
+                    color: Colors.white,
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     child: Center(child: Text(widget.no_telepon)),
                   ),
@@ -97,7 +97,7 @@ class _DetailNotaState extends State<DetailNota> {
                       (snapshot.data!).snapshot.value != null) {
                     Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
                         (snapshot.data! as DatabaseEvent).snapshot.value
-                        as Map<dynamic, dynamic>);
+                            as Map<dynamic, dynamic>);
                     print(data['tanggal_booking']);
                     return Column(
                       children: [
@@ -117,40 +117,39 @@ class _DetailNotaState extends State<DetailNota> {
                         SizedBox(
                           height: 10,
                         ),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: DetailInfo(
-                                    icon: "assets/icon_umur.png", value: "${data['umur']}")),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                                child: DetailInfo(
-                                    icon: "assets/icon_bobot.png",
-                                    value: "${data['berat']}")),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
+                        // Row(
+                        //   children: [
+                        //     Expanded(
+                        //         child: DetailInfo(
+                        //             icon: "assets/icon_umur.png", value: "${data['umur']}")),
+                        //     SizedBox(
+                        //       width: 10,
+                        //     ),
+                        //     Expanded(
+                        //         child: DetailInfo(
+                        //             icon: "assets/icon_bobot.png",
+                        //             value: "${data['berat']}")),
+                        //   ],
+                        // ),
                         DetailInfo(
-                            icon: "assets/icon_tinggi.png", value: "${data['tinggi']}"),
-                        SizedBox(
-                          height: 10,
-                        ),
+                            icon: "assets/icon_umur.png",
+                            value: "${data['umur']}"),
                         DetailInfo(
-                            icon: "assets/icon_harga.png", value: "${data['harga']}"),
-                        SizedBox(
-                          height: 10,
-                        ),
+                            icon: "assets/icon_bobot.png",
+                            value: "${data['berat']}"),
                         DetailInfo(
-                            icon: "assets/icon_kalender.png", value: "${formatteddate(data['tanggal_booking'])}"),
-                        SizedBox(
-                          height: 10,
-                        ),
+                            icon: "assets/icon_tinggi.png",
+                            value: "${data['tinggi']}"),
                         DetailInfo(
-                            icon: "assets/icon_truk.png", value: "${formatteddate(DateTime.parse(data['tanggal_booking']).add(Duration(days: 2)).toString())}"),
+                            icon: "assets/icon_harga.png",
+                            value: "${data['harga']}"),
+                        DetailInfo(
+                            icon: "assets/icon_kalender.png",
+                            value: "${formatteddate(data['tanggal_booking'])}"),
+                        DetailInfo(
+                            icon: "assets/icon_truk.png",
+                            value:
+                                "${formatteddate(DateTime.parse(data['tanggal_booking']).add(Duration(days: 2)).toString())}"),
                       ],
                     );
                   }

@@ -46,17 +46,32 @@ class _CategoryListState extends State<CategoryList> {
     dataKey = [];
     await FirebaseDatabase.instance.ref().child('booking').get().then((value) {
       dataTernak = value.value as Map<dynamic, dynamic>;
-      dataTernak.entries.forEach((element) async {
-        if (DateTime.parse(element.value['tanggal_booking'].toString())
-            .add(Duration(days: 2))
-            .isBefore(DateTime.now())) {
-          await FirebaseDatabase.instance.ref().child("booking").child(element.key).remove();
-        } else {
+      dataTernak.entries.forEach((element) {
+        // if (DateTime.parse(element.value['tanggal_booking'].toString())
+        //     .add(Duration(days: 2))
+        //     .isBefore(DateTime.now())) {
+        //   await FirebaseDatabase.instance.ref().child("booking").child(element.key).remove();
+        // } else {
           dataKey.add(element.value['id_ternak']);
-        }
+        // }
       });
       setState(() {});
     });
+  }
+
+  voiceKategori(String ternak){
+    switch(ternak){
+      case 'sapi':
+        return "hapi";
+      case 'kuda':
+        return "njara";
+      case 'kerbau':
+        return "karambo";
+      case 'kambing':
+        return "kamambi";
+
+    }
+
   }
 
   @override
@@ -66,7 +81,7 @@ class _CategoryListState extends State<CategoryList> {
   }
   @override
   Widget build(BuildContext context) {
-    playVoiceover('Silahkan memilih ${widget.kategori} yang di inginkan');
+    playVoiceover('maiwa pilih ${voiceKategori(widget.kategori.toLowerCase())} napa mbuham');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Warna.latar,

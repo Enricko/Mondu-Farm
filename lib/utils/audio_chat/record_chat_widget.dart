@@ -21,7 +21,12 @@ import '../../chat.dart';
 import '../color.dart';
 
 class RecordChatWidget extends StatefulWidget {
-  const RecordChatWidget({super.key, required this.idUser, required this.idTernak, required this.kategori});
+  const RecordChatWidget(
+      {super.key,
+      required this.idUser,
+      required this.idTernak,
+      required this.kategori});
+
   final String idUser;
   final String idTernak;
   final String kategori;
@@ -126,25 +131,44 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
   ];
 
   List<String> remoteSample = [
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/01.aac', // 'assets/samples/sample.aac',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/01.aac', // 'assets/samples/sample.aac',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/08.opus', // 'assets/samples/sample.opus',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/04-opus.caf', // 'assets/samples/sample_opus.caf',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/05.mp3', // 'assets/samples/sample.mp3',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/07.ogg', // 'assets/samples/sample.ogg',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/10-pcm16.raw', // 'assets/samples/sample.pcm',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/13.wav', // 'assets/samples/sample.wav',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/02.aiff', // 'assets/samples/sample.aiff',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/01-pcm.caf', // 'assets/samples/sample_pcm.caf',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/04.flac', // 'assets/samples/sample.flac',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/06.mp4', // 'assets/samples/sample.mp4',
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/03.amr', // 'assets/samples/sample.amr', // amrNB
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/03.amr', // 'assets/samples/sample_xxx.amr', // amrWB
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/09-pcm8.raw', // 'assets/samples/sample_xxx.pcm', // pcm8
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/12-pcmfloat.raw', // 'assets/samples/sample_xxx.pcm', // pcmFloat32
-    '', // 'assets/samples/sample_xxx.pcm', // pcmWebM
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/02-opus.webm', // 'assets/samples/sample_opus.webm', // opusWebM
-    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/03-vorbis.webm', // 'assets/samples/sample_vorbis.webm', // vorbisWebM
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/01.aac',
+    // 'assets/samples/sample.aac',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/01.aac',
+    // 'assets/samples/sample.aac',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/08.opus',
+    // 'assets/samples/sample.opus',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/04-opus.caf',
+    // 'assets/samples/sample_opus.caf',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/05.mp3',
+    // 'assets/samples/sample.mp3',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/07.ogg',
+    // 'assets/samples/sample.ogg',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/10-pcm16.raw',
+    // 'assets/samples/sample.pcm',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/13.wav',
+    // 'assets/samples/sample.wav',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/02.aiff',
+    // 'assets/samples/sample.aiff',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/01-pcm.caf',
+    // 'assets/samples/sample_pcm.caf',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/04.flac',
+    // 'assets/samples/sample.flac',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/06.mp4',
+    // 'assets/samples/sample.mp4',
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/03.amr',
+    // 'assets/samples/sample.amr', // amrNB
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/03.amr',
+    // 'assets/samples/sample_xxx.amr', // amrWB
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/09-pcm8.raw',
+    // 'assets/samples/sample_xxx.pcm', // pcm8
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/12-pcmfloat.raw',
+    // 'assets/samples/sample_xxx.pcm', // pcmFloat32
+    '',
+    // 'assets/samples/sample_xxx.pcm', // pcmWebM
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/02-opus.webm',
+    // 'assets/samples/sample_opus.webm', // opusWebM
+    'https://flutter-sound.canardoux.xyz/web_example/assets/extract/03-vorbis.webm',
+    // 'assets/samples/sample_vorbis.webm', // vorbisWebM
   ];
 
   StreamSubscription? _recorderSubscription;
@@ -205,9 +229,11 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
     await session.configure(AudioSessionConfiguration(
       avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
       avAudioSessionCategoryOptions:
-          AVAudioSessionCategoryOptions.allowBluetooth | AVAudioSessionCategoryOptions.defaultToSpeaker,
+          AVAudioSessionCategoryOptions.allowBluetooth |
+              AVAudioSessionCategoryOptions.defaultToSpeaker,
       avAudioSessionMode: AVAudioSessionMode.spokenAudio,
-      avAudioSessionRouteSharingPolicy: AVAudioSessionRouteSharingPolicy.defaultPolicy,
+      avAudioSessionRouteSharingPolicy:
+          AVAudioSessionRouteSharingPolicy.defaultPolicy,
       avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
       androidAudioAttributes: const AndroidAudioAttributes(
         contentType: AndroidAudioContentType.speech,
@@ -232,6 +258,7 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
   void initState() {
     super.initState();
     init();
+    // onStartRecorderPressed();
   }
 
   void cancelRecorderSubscriptions() {
@@ -284,7 +311,8 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
       if (!kIsWeb) {
         var status = await Permission.microphone.request();
         if (status != PermissionStatus.granted) {
-          throw RecordingPermissionException('Microphone permission not granted');
+          throw RecordingPermissionException(
+              'Microphone permission not granted');
         }
       }
       var path = '';
@@ -308,7 +336,8 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
           sink = null; // TODO
         }
         recordingDataController = StreamController<Food>();
-        _recordingDataSubscription = recordingDataController!.stream.listen((buffer) {
+        _recordingDataSubscription =
+            recordingDataController!.stream.listen((buffer) {
           if (buffer is FoodData) {
             sink!.add(buffer.data!);
           }
@@ -396,7 +425,8 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
       maxDuration = e.duration.inMilliseconds.toDouble();
       if (maxDuration <= 0) maxDuration = 0.0;
 
-      sliderCurrentPosition = min(e.position.inMilliseconds.toDouble(), maxDuration);
+      sliderCurrentPosition =
+          min(e.position.inMilliseconds.toDouble(), maxDuration);
       if (sliderCurrentPosition < 0.0) {
         sliderCurrentPosition = 0.0;
       }
@@ -430,6 +460,7 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
 */
 
   final int blockSize = 4096;
+
   Future<void> feedHim(String path) async {
     var buffer = await _readFileByte(path);
     //var buffer = await getAssetData('assets/samples/sample.pcm');
@@ -438,7 +469,8 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
     var totalLength = buffer.length;
     while (totalLength > 0 && !playerModule.isStopped) {
       var bsize = totalLength > blockSize ? blockSize : totalLength;
-      await playerModule.feedFromStream(buffer.sublist(lnData, lnData + bsize)); // await !!!!
+      await playerModule
+          .feedFromStream(buffer.sublist(lnData, lnData + bsize)); // await !!!!
       lnData += bsize;
       totalLength -= bsize;
     }
@@ -450,7 +482,9 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
       String? audioFilePath;
       var codec = _codec;
       if (_media == Media.asset) {
-        dataBuffer = (await rootBundle.load(assetSample[codec.index])).buffer.asUint8List();
+        dataBuffer = (await rootBundle.load(assetSample[codec.index]))
+            .buffer
+            .asUint8List();
       } else if (_media == Media.file || _media == Media.stream) {
         // Do we want to play from buffer or from file ?
         if (kIsWeb || await fileExists(_path[codec.index]!)) {
@@ -498,7 +532,9 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
             dataBuffer = await flutterSoundHelper.pcmToWaveBuffer(
               inputBuffer: dataBuffer,
               numChannels: 1,
-              sampleRate: (_codec == Codec.pcm16 && _media == Media.asset) ? 48000 : tSAMPLERATE,
+              sampleRate: (_codec == Codec.pcm16 && _media == Media.asset)
+                  ? 48000
+                  : tSAMPLERATE,
             );
             codec = Codec.pcm16WAV;
           }
@@ -596,7 +632,9 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
   }
 
   void Function()? onStopPlayerPressed() {
-    return (playerModule.isPlaying || playerModule.isPaused) ? stopPlayer : null;
+    return (playerModule.isPlaying || playerModule.isPaused)
+        ? stopPlayer
+        : null;
   }
 
   void Function()? onStartPlayerPressed() {
@@ -673,8 +711,13 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
     EasyLoading.show(status: 'loading...');
 
     // await recorderModule.getRecordURL(path: _path[_codec.index]!).then((value) async {
-    await Chat.InsertChat(_path[_codec.index]!, _recorderDuration.inMilliseconds, widget.idUser, widget.idTernak,
-            widget.kategori, context)
+    await Chat.InsertChat(
+            _path[_codec.index]!,
+            _recorderDuration.inMilliseconds,
+            widget.idUser,
+            widget.idTernak,
+            widget.kategori,
+            context)
         .whenComplete(() {
       deleteVoice();
       setState(() {});
@@ -691,22 +734,29 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    return Container(
-      alignment: Alignment.center,
-      width: width,
-      decoration: BoxDecoration(color: Warna.ungu, borderRadius: BorderRadius.circular(10)),
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
-            child: Row(
+    return FittedBox(
+      child: Container(
+        alignment: Alignment.center,
+        width: width,
+        decoration: BoxDecoration(
+            color: Colors.black54, borderRadius: BorderRadius.only(topRight: Radius.circular(10),topLeft: Radius.circular(10))),
+        margin: EdgeInsets.only(top: 5),
+        padding: EdgeInsets.symmetric(vertical: 10,horizontal: 15),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: onStartPlayerPressed() ?? onPauseResumePlayerPressed(),
-                  icon: Icon(onPlayed ? Icons.play_arrow : Icons.pause),
+                  onPressed:
+                      onStartPlayerPressed() ?? onPauseResumePlayerPressed(),
+                  icon: Icon(
+                    onPlayed ? Icons.play_arrow : Icons.pause,
+                    color: Colors.white,
+                    size: 35,
+                  ),
                 ),
                 Expanded(
                   // constraints: BoxConstraints(minWidth: 100, maxWidth: 1000),
@@ -724,73 +774,62 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("${_formatDuration(onPlayed ? _recorderDuration : _playerDuration)}"),
+                    Text(
+                      "${_formatDuration(onPlayed ? _recorderDuration : _playerDuration)}",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Text(_mRecorder!.isRecording ? 'Recording in progress' : 'Recorder is stopped'),
-              IconButton(
-                onPressed: !readySubmit
-                    ? null
-                    : () {
-                        deleteVoice();
-                      },
-                icon: Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: !readySubmit ? Warna.biruUngu.withOpacity(0.5) : Warna.biruUngu,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: Icon(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Text(_mRecorder!.isRecording ? 'Recording in progress' : 'Recorder is stopped'),
+                IconButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                    !readySubmit ? Warna.ungu.withOpacity(0.5) : Warna.ungu,
+                  )),
+                  onPressed: !readySubmit
+                      ? null
+                      : () {
+                          deleteVoice();
+                        },
+                  icon: Icon(
                     Icons.delete_forever,
+                    color: Colors.white,
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              IconButton(
-                onPressed: onStartRecorderPressed(),
-                icon: Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: Warna.biruUngu,
-                    borderRadius: BorderRadius.circular(50),
+                IconButton(
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Warna.ungu)),
+                  onPressed: onStartRecorderPressed(),
+                  icon: Icon(
+                    !onRecorded ? Icons.mic : Icons.pause,
+                    color: Colors.white,
+                    size: 35,
                   ),
-                  child: Icon(!onRecorded ? Icons.mic : Icons.pause),
                 ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              IconButton(
-                onPressed: !readySubmit
-                    ? null
-                    : () {
-                        submitVoiceNote();
-                      },
-                disabledColor: Colors.black.withOpacity(0.5),
-                icon: Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: !readySubmit ? Warna.biruUngu.withOpacity(0.5) : Warna.biruUngu,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: Icon(Icons.send),
+                IconButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                    !readySubmit
+                        ? Warna.ungu.withOpacity(0.5)
+                        : Warna.ungu,
+                  )),
+                  onPressed: !readySubmit
+                      ? null
+                      : () {
+                          submitVoiceNote();
+                        },
+                  // disabledColor: Colors.black.withOpacity(0.5),
+                  icon: Icon(Icons.send,color: Colors.white,),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -9,6 +9,7 @@ import 'package:mondu_farm/list_kategori.dart';
 import 'package:mondu_farm/chat_list.dart';
 import 'package:mondu_farm/login_page.dart';
 import 'package:mondu_farm/utils/color.dart';
+import 'package:mondu_farm/utils/voice_over.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
@@ -80,7 +81,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     getPref();
-    test();
+    // test();
 
   }
 
@@ -98,7 +99,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    playVoiceover("Selamat Datang , Silahkan memilih kategori ternak ");
+    playVoiceover("maiwa pilih jenis mbada napa mbuham ");
     return Scaffold(
       backgroundColor: Warna.latar,
       body: SafeArea(

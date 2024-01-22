@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mondu_farm/detail_nota.dart';
 import 'package:mondu_farm/utils/color.dart';
@@ -24,8 +25,25 @@ class _ListBookingState extends State<ListBooking> {
 
   String formatteddate(String date) {
     var formatteddate =
-        DateFormat('d MMMM y').format(DateTime.parse(date));
+        DateFormat('dd-MM-yyyy').format(DateTime.parse(date));
     return formatteddate;
+  }
+
+   iconKategori(String kategori){
+    switch(kategori){
+      case 'sapi':{
+       return Image.asset("assets/icon_sapi.png",height: 50,alignment: Alignment.topLeft);
+      }
+      case 'kuda':{
+       return Image.asset("assets/icon_kuda.png",height: 50,alignment: Alignment.topLeft,);
+      }
+      case 'kerbau':{
+        return Image.asset("assets/icon_kerbau.png",height: 50,alignment: Alignment.topLeft);
+      }
+      case 'kambing':{
+        return Image.asset("assets/icon_kambing.png",height: 50,alignment: Alignment.topLeft,);
+      }
+    }
   }
 
   @override
@@ -67,14 +85,28 @@ class _ListBookingState extends State<ListBooking> {
                   return Column(
                     children: [
                       ListTile(
-                        title: Text(filteredList[index]["kategori"]),
-                        subtitle: Text("${formatteddate(filteredList[index]["tanggal_booking"].toString())}"),
+                        title: iconKategori(filteredList[index]["kategori"].toString().toLowerCase()),
+                        subtitle: Row(
+                          children: [
+                            Image.asset("assets/icon_kalender2.png",height: 30),
+                            SizedBox(width: 10,),
+                            Text("${formatteddate(filteredList[index]["tanggal_booking"].toString())}"),
+                          ],
+                        ),
+
                         trailing: (filteredList[index]['id_nota'] == "null")
-                            ? Text(
-                                "Sedang di Proses",
-                                style: TextStyle(fontSize: 15),
-                              )
+                            ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                CircleAvatar(
+                                    backgroundColor: Warna.ungu,
+                                    child: Icon(Icons.sync,color: Colors.white,)),
+                                SizedBox(width: 15,)
+                              ],
+                            )
                             : ElevatedButton(
+                          style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Warna.ungu)),
                                 onPressed: () {
                                   Navigator.push(
                                       context,
@@ -90,7 +122,7 @@ class _ListBookingState extends State<ListBooking> {
                                                     ['id_nota'],
                                               )));
                                 },
-                                child: Text("Lihat Nota")),
+                                child: Icon(Icons.file_copy,color: Colors.white,)),
                       ),
                       Divider(
                         color: Colors.black,

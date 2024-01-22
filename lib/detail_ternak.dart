@@ -16,7 +16,9 @@ class DetailTernak extends StatefulWidget {
   final String url;
   final String kategori;
 
-  const DetailTernak({Key? key, required this.url, required this.kategori, required this.uid}) : super(key: key);
+  const DetailTernak(
+      {Key? key, required this.url, required this.kategori, required this.uid})
+      : super(key: key);
 
   @override
   State<DetailTernak> createState() => _DetailTernakState();
@@ -55,7 +57,12 @@ class _DetailTernakState extends State<DetailTernak> {
 
   Future<void> getUserFromFirebase() async {
     try {
-      FirebaseDatabase.instance.ref().child("users").child(id_user).onValue.listen((event) {
+      FirebaseDatabase.instance
+          .ref()
+          .child("users")
+          .child(id_user)
+          .onValue
+          .listen((event) {
         var snapshot = event.snapshot.value as Map;
         nama = snapshot['nama'];
         no_telepon = snapshot['no_telepon'];
@@ -73,7 +80,7 @@ class _DetailTernakState extends State<DetailTernak> {
 
   @override
   Widget build(BuildContext context) {
-    playVoiceover("Lakukan Negosiasi atau Booking langsung");
+    playVoiceover("Maiwa melalui tawar menawar ndang langsung tek");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Warna.latar,
@@ -86,7 +93,7 @@ class _DetailTernakState extends State<DetailTernak> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 300,
+                  height: 250,
                   width: double.infinity,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
@@ -107,34 +114,49 @@ class _DetailTernakState extends State<DetailTernak> {
                       .child(widget.uid)
                       .onValue,
                   builder: (context, snapshot) {
-                    if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
+                    if (snapshot.hasData &&
+                        (snapshot.data!).snapshot.value != null) {
                       Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                          (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
+                          (snapshot.data! as DatabaseEvent).snapshot.value
+                              as Map<dynamic, dynamic>);
                       return Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(child: DetailInfo(icon: "assets/icon_umur.png", value: data['usia'].toString())),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                  child: DetailInfo(
-                                icon: "assets/icon_tinggi.png",
-                                value: "${data['tinggi'].toString()} M",
-                              )),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          //   children: [
+                          //     Expanded(
+                          //         child: DetailInfo(
+                          //             icon: "assets/icon_umur.png",
+                          //             value: data['usia'].toString(),
+                          //           height: 70,
+                          //         ),
+                          //     ),
+                          //     SizedBox(
+                          //       width: 10,
+                          //     ),
+                          //     Expanded(
+                          //       child: DetailInfo(
+                          //         icon: "assets/icon_bobot.png",
+                          //         value: "${data['berat'].toString()} Kg",
+                          //         height: 70,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          DetailInfo(
+                            icon: "assets/icon_umur.png",
+                            value: data['usia'].toString(),
+                            // height: 70,
                           ),
                           DetailInfo(
                             icon: "assets/icon_bobot.png",
                             value: "${data['berat'].toString()} Kg",
+                            height: 70,
                           ),
-                          SizedBox(
-                            height: 10,
+                          DetailInfo(
+                            icon: "assets/icon_tinggi.png",
+                            value: "${data['tinggi'].toString()} Meter",
+                            height: 70,
                           ),
                           DetailInfo(
                               icon: "assets/icon_harga.png",
@@ -142,19 +164,23 @@ class _DetailTernakState extends State<DetailTernak> {
                                 data['harga'],
                               )),
                           SizedBox(
-                            height: 40,
+                            height: 20,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               IconButton(
-                                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.purple)),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => DetailChat(
-                                          idTernak: snapshot.data!.snapshot.key!,
+                                          idTernak:
+                                              snapshot.data!.snapshot.key!,
                                           kategori: widget.kategori,
                                           dataTernak: data,
                                         ),
@@ -163,9 +189,12 @@ class _DetailTernakState extends State<DetailTernak> {
                                   },
                                   icon: Image.asset("assets/icon_chat.png")),
                               IconButton(
-                                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.purple)),
                                   onPressed: () {
-                                    playVoiceover("Apakah anda yakin?");
+                                    playVoiceover("apakah  nyum yakin?");
                                     Alerts.showAlertYesNo(
                                       onPressYes: () async {
                                         Booking.insert(context, {
@@ -174,7 +203,10 @@ class _DetailTernakState extends State<DetailTernak> {
                                           'no_telepon': no_telepon,
                                           'id_ternak': widget.uid,
                                           'kategori': widget.kategori,
-                                          'tanggal_booking': DateTime.now().toString(),
+                                          'tanggal_booking':
+                                              "2024-01-14 14:22:29.368050",
+                                          // DateTime.now().toString(),
+                                          // DateTime.now().subtract(Duration(days: 3)).toString(), // Testing
                                           'status_booking': "Sedang Di Booking",
                                         });
                                       },
@@ -213,40 +245,86 @@ class _DetailTernakState extends State<DetailTernak> {
 class DetailInfo extends StatelessWidget {
   final String icon;
   final String value;
+  final double? height;
 
   const DetailInfo({
     super.key,
     required this.icon,
     required this.value,
+    this.height = 60,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        // width: 150,
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-            color: Colors.purple,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(50),
-                bottomLeft: Radius.circular(50),
-                topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20))),
-        child: Row(
+    return Column(
+      children: [
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Image.asset(icon, height: 60),
+            ClipOval(
+                child: Container(
+                    width: 80.0,
+                    // Adjust the width and height as needed
+                    height: 80.0,
+                    padding: EdgeInsets.all(8),
+                    color: Warna.ungu,
+                    child: Image.asset(icon, height: height))),
+            SizedBox(
+              width: 10,
+            ),
             Expanded(
-              
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  value,
-                  style: TextStyle(fontSize: 30, color: Colors.white),
+              child: TextFormField(
+                initialValue: value,
+                readOnly: true,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: const Color(0xFFFCFDFE),
+                  // hintText: "Mond**",
+                  // hintStyle: const TextStyle(
+                  //   color: Color(0xFF696F79),
+                  //   fontSize: 14,
+                  //   fontFamily: 'Poppins',
+                  //   fontWeight: FontWeight.w400,
+                  // ),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(13),
+                    borderSide:
+                        const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                  ),
                 ),
               ),
             )
           ],
-        ));
+        ),
+        SizedBox(height: 10,)
+      ],
+    );
+    // Container(
+    //   // width: 150,
+    //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    //   decoration: BoxDecoration(
+    //       color: Colors.purple,
+    //       borderRadius: BorderRadius.only(
+    //           topLeft: Radius.circular(50),
+    //           bottomLeft: Radius.circular(50),
+    //           topRight: Radius.circular(20),
+    //           bottomRight: Radius.circular(20))),
+    //   child: Row(
+    //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+    //     children: [
+    //       Image.asset(icon, height: height),
+    //       Expanded(
+    //         child: FittedBox(
+    //           fit: BoxFit.scaleDown,
+    //           child: Text(
+    //             value,
+    //             style: TextStyle(fontSize: 30, color: Colors.white),
+    //           ),
+    //         ),
+    //       )
+    //     ],
+    //   ));
   }
 }
