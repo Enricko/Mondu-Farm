@@ -53,6 +53,7 @@ class _DetailTernakState extends State<DetailTernak> {
     setState(() {
       getUserFromFirebase();
     });
+    playVoiceover("Maiwa melalui tawar menawar ndang langsung tek");
   }
 
   Future<void> getUserFromFirebase() async {
@@ -80,7 +81,7 @@ class _DetailTernakState extends State<DetailTernak> {
 
   @override
   Widget build(BuildContext context) {
-    playVoiceover("Maiwa melalui tawar menawar ndang langsung tek");
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Warna.latar,
@@ -144,25 +145,27 @@ class _DetailTernakState extends State<DetailTernak> {
                           //   ],
                           // ),
                           DetailInfo(
-                            icon: "assets/icon_umur.png",
-                            value: data['usia'].toString(),
-                            // height: 70,
+                            icon: "assets/trend.png",
+                            value: "${data['usia'].toString()} Tahun",
+                            height: 65,
                           ),
                           DetailInfo(
-                            icon: "assets/icon_bobot.png",
+                            icon: "assets/scale.png",
                             value: "${data['berat'].toString()} Kg",
-                            height: 70,
+                            height: 60,
                           ),
                           DetailInfo(
-                            icon: "assets/icon_tinggi.png",
+                            icon: "assets/roll.png",
                             value: "${data['tinggi'].toString()} Meter",
-                            height: 70,
+                            height: 60,
                           ),
                           DetailInfo(
-                              icon: "assets/icon_harga.png",
+                              icon: "assets/money2.png",
                               value: currencyFormatter.format(
                                 data['harga'],
-                              )),
+
+                              ),
+                          height: 60,),
                           SizedBox(
                             height: 20,
                           ),
@@ -171,9 +174,9 @@ class _DetailTernakState extends State<DetailTernak> {
                             children: [
                               IconButton(
                                   style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.purple)),
+                    padding: MaterialStateProperty.all(EdgeInsets.fromLTRB(18,10,18,18)),
+                    backgroundColor:
+                    MaterialStateProperty.all(Warna.secondary)),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
@@ -187,25 +190,29 @@ class _DetailTernakState extends State<DetailTernak> {
                                       ),
                                     );
                                   },
-                                  icon: Image.asset("assets/icon_chat.png")),
+                                  icon: SizedBox(
+                                      height: 80,
+                                      child: Image.asset("assets/icon_chat2.png"))),
                               IconButton(
                                   style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(EdgeInsets.fromLTRB(18,10,18,18)),
                                       backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.purple)),
+                                      MaterialStateProperty.all(Warna.secondary)),
                                   onPressed: () {
                                     playVoiceover("apakah  nyum yakin?");
                                     Alerts.showAlertYesNo(
+                                      url: "assets/lottie/booking.json",
                                       onPressYes: () async {
                                         Booking.insert(context, {
                                           "id_user": id_user,
                                           'nama': nama,
                                           'no_telepon': no_telepon,
                                           'id_ternak': widget.uid,
+                                          'url_gambar': widget.url,
                                           'kategori': widget.kategori,
                                           'tanggal_booking':
-                                              "2024-01-14 14:22:29.368050",
-                                          // DateTime.now().toString(),
+                                              // "2024-01-14 14:22:29.368050",
+                                          DateTime.now().toString(),
                                           // DateTime.now().subtract(Duration(days: 3)).toString(), // Testing
                                           'status_booking': "Sedang Di Booking",
                                         });
@@ -216,7 +223,9 @@ class _DetailTernakState extends State<DetailTernak> {
                                       context: context,
                                     );
                                   },
-                                  icon: Image.asset("assets/icon_booking.png")),
+                                  icon: SizedBox(
+                                      height: 80,
+                                      child: Image.asset("assets/shopping-cart1.png"))),
                             ],
                           )
                         ],
@@ -266,19 +275,24 @@ class DetailInfo extends StatelessWidget {
                     width: 80.0,
                     // Adjust the width and height as needed
                     height: 80.0,
-                    padding: EdgeInsets.all(8),
-                    color: Warna.ungu,
-                    child: Image.asset(icon, height: height))),
+                    padding: EdgeInsets.all(height! - 50),
+                    color: Warna.secondary,
+                    child: Image.asset(icon,
+                    //     height: height,
+                    // width:height,
+
+                    ))),
             SizedBox(
               width: 10,
             ),
             Expanded(
               child: TextFormField(
                 initialValue: value,
+                style: TextStyle(color: Colors.black),
                 readOnly: true,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: const Color(0xFFFCFDFE),
+                  fillColor: Warna.tersier,
                   // hintText: "Mond**",
                   // hintStyle: const TextStyle(
                   //   color: Color(0xFF696F79),

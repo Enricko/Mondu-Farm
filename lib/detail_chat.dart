@@ -57,7 +57,7 @@ class _DetailChatState extends State<DetailChat> {
       appBar: AppBar(
         backgroundColor: Warna.latar,
         centerTitle: true,
-        title: Text("Detail Chat"),
+        // title: Text("Detail Chat",style: TextStyle(color: Colors.white),),
       ),
       backgroundColor: Warna.latar,
       body:
@@ -68,7 +68,7 @@ class _DetailChatState extends State<DetailChat> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  height: 200,
+                  height: 250,
                   // margin: EdgeInsets.all(15),
                   child: FutureBuilder(
                     future: getImageFromStorage(widget.dataTernak['gambar'], widget.kategori),
@@ -149,9 +149,10 @@ class _DetailChatState extends State<DetailChat> {
                       );
                     }
                     if (snapshot.hasData) {
-                      return Center(
-                        child: Text("Belum ada pesan masuk"),
-                      );
+                      return SizedBox();
+                      //   Center(
+                      //   child: Text("Belum ada pesan masuk"),
+                      // );
                     }
                     return Center(
                       child: CircularProgressIndicator(),

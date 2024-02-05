@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:mondu_farm/demo_page.dart';
+import 'package:mondu_farm/utils/color.dart';
 
 import 'firebase_options.dart';
 import 'login_page.dart';
@@ -30,11 +31,18 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       builder: EasyLoading.init(),
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          primary: Colors.white,
+        ),
+          appBarTheme:  const AppBarTheme(
+              iconTheme: IconThemeData(color: Colors.white)),
+          scaffoldBackgroundColor: Warna.latar,
         useMaterial3: true,
           fontFamily: 'Poppins'
       ),
-      home: DemoPage(),
+      home: LoginPage()
+      // DemoPage(),
     );
   }
 }

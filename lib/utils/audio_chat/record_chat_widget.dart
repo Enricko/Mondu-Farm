@@ -790,7 +790,7 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
                 IconButton(
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                    !readySubmit ? Warna.ungu.withOpacity(0.5) : Warna.ungu,
+                    !readySubmit ? Warna.secondary.withOpacity(0.5) : Warna.secondary,
                   )),
                   onPressed: !readySubmit
                       ? null
@@ -798,12 +798,12 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
                           deleteVoice();
                         },
                   icon: Icon(
-                    Icons.delete_forever,
+                    Icons.delete,
                     color: Colors.white,
                   ),
                 ),
                 IconButton(
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Warna.ungu)),
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Warna.secondary)),
                   onPressed: onStartRecorderPressed(),
                   icon: Icon(
                     !onRecorded ? Icons.mic : Icons.pause,
@@ -815,8 +815,8 @@ class _RecordChatWidgetState extends State<RecordChatWidget> {
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
                     !readySubmit
-                        ? Warna.ungu.withOpacity(0.5)
-                        : Warna.ungu,
+                        ? Warna.secondary.withOpacity(0.5)
+                        : Warna.secondary,
                   )),
                   onPressed: !readySubmit
                       ? null

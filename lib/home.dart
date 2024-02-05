@@ -8,6 +8,7 @@ import 'package:mondu_farm/list_booking.dart';
 import 'package:mondu_farm/list_kategori.dart';
 import 'package:mondu_farm/chat_list.dart';
 import 'package:mondu_farm/login_page.dart';
+import 'package:mondu_farm/utils/alerts.dart';
 import 'package:mondu_farm/utils/color.dart';
 import 'package:mondu_farm/utils/voice_over.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -72,6 +73,7 @@ class _HomeState extends State<Home> {
       id_user = pref.getString('id_user')!;
       nama = pref.getString('nama')!;
     });
+    playVoiceover("maiwa pilih jenis mbada napa mbuham ");
     // setState(()  {
     //    getUserFromFirebase();
     // });
@@ -99,9 +101,9 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    playVoiceover("maiwa pilih jenis mbada napa mbuham ");
+
     return Scaffold(
-      backgroundColor: Warna.latar,
+
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -117,22 +119,32 @@ class _HomeState extends State<Home> {
                         SizedBox(
                           width: 10,
                         ),
-                        Icon(Icons.person),
+                        Icon(Icons.person,color: Colors.white,),
                         SizedBox(
                           width: 5,
                         ),
                         Text(
                           nama ?? "",
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(fontSize: 16,color: Colors.white),
                         )
             
                       ],
                     ),
                     IconButton(
                         onPressed: () {
-                          logout(context);
+                          Alerts.showAlertYesNo(
+                            url: "assets/lottie/logout.json",
+                            onPressYes: () async {
+                              logout(context);
+                            },
+                            onPressNo: () {
+                              Navigator.pop(context);
+                            },
+                            context: context,
+                          );
+
                         },
-                        icon: Icon(Icons.logout))
+                        icon: Icon(Icons.logout,color: Colors.white,))
                   ],
                 ),
                 SizedBox(
@@ -140,10 +152,11 @@ class _HomeState extends State<Home> {
                 ),
                 SizedBox(
                   width: double.infinity,
+                  height: 150,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
                     child: Image.asset(
-                      "assets/banner_home.jpg",
+                      "assets/logo_mondu.png",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -190,20 +203,26 @@ class _HomeState extends State<Home> {
                   children: [
                     IconButton(
                         style: ButtonStyle(
+                            padding: MaterialStateProperty.all(EdgeInsets.fromLTRB(18,10,18,18)),
                             backgroundColor:
-                                MaterialStateProperty.all(Colors.purple)),
+                                MaterialStateProperty.all(Warna.secondary)),
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(builder: (ctx)=>ChatList()));
                         },
-                        icon: Image.asset("assets/icon_chat.png")),
+                        icon: SizedBox(
+                            width: 80,
+                            child: Image.asset("assets/icon_chat2.png"))),
                     IconButton(
                         style: ButtonStyle(
+                          padding: MaterialStateProperty.all(EdgeInsets.fromLTRB(18,10,18,18)),
                             backgroundColor:
-                                MaterialStateProperty.all(Colors.purple)),
+                                MaterialStateProperty.all(Warna.secondary)),
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(builder: (ctx)=>ListBooking()));
                         },
-                        icon: Image.asset("assets/icon_booking.png")),
+                        icon: SizedBox(
+                            width: 80,
+                            child: Image.asset("assets/list.png",))),
                   ],
                 ),
                 SizedBox(height: 20,)

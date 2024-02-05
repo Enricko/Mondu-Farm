@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mondu_farm/utils/color.dart';
 import 'package:mondu_farm/utils/custom_extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -105,191 +106,352 @@ class _ChatListState extends State<ChatList> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         var data = snapshot.data!;
-                        return Column(
-                          children: [
-                            ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DetailChat(
-                                      idTernak: dataList[index]['uid'],
-                                      kategori: dataList[index]['kategori'],
-                                      dataTernak: data,
+                        return Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Stack(
+                            children: [
+                              FutureBuilder(
+                                future: getImageFromStorage(
+                                    data['gambar'],
+                                    dataList[index]['kategori']),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Image.network(
+                                        // filteredList[index]["url_gambar"].toString(),
+                                        snapshot.data!,
+                                        width: double.infinity,
+                                        height: 300,
+                                        fit: BoxFit.cover,
+                                        // errorBuilder: (context, obj, stackTrace) {
+                                        //   return Image.asset(
+                                        //       "assets/images/place_holder.jpeg");
+                                        // },
+                                      ),
+                                    );
+                                  }
+                                  if (snapshot.hasError) {
+                                    return ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Image.asset("assets/placeholder.png",width: double.infinity,
+                                        height: 300,),
+                                    );
+                                  }
+                                  return  ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Container(
+                                        width: double.infinity,
+                                        height: 300,
+                                      child: Center(child: CircularProgressIndicator(),),
+                                    )
+                                  );
+                                },
+                              ),
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                bottom: 0,
+                                right: 0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment(0, 1),
+                                      colors: <Color>[
+                                        Color(0x494949),
+                                        Color(0xFF505050),
+                                      ], // Gradient from https://learnui.design/tools/gradient-generator.html
                                     ),
                                   ),
-                                );
-                              },
-                              trailing: Icon(Icons.arrow_forward_ios),
-                              tileColor: Colors.black12,
-                              leading: SizedBox(
-                                width: 120,
-                                height: 100,
-                                child: FutureBuilder(
-                                  future: getImageFromStorage(data['gambar'],
-                                      dataList[index]['kategori']),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return ClipRRect(
-                                        borderRadius: BorderRadius.circular(5),
-                                        child: Image.network(
-                                          snapshot.data!,
-                                          fit: BoxFit.fill,
+                                ),
+                              ),
+                              Positioned(
+                                  bottom: 20,
+                                  right: 20,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DetailChat(
+                                            idTernak: dataList[index]['uid'],
+                                            kategori: dataList[index]
+                                            ['kategori'],
+                                            dataTernak: data,
+                                          ),
                                         ),
                                       );
-                                    }
-                                    if (snapshot.hasError) {
-                                      return Text("Terjadi Kesalahan");
-                                    }
-                                    return Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  },
-                                ),
-                              ),
-                              subtitle: Row(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Image.asset(
-                                        "assets/icon_umur.png",
-                                        height: 20,
-                                      ),
-                                      SizedBox(
-                                        height: 3,
-                                      ),
-                                      Image.asset("assets/icon_tinggi.png",
-                                          height: 20),
-                                      SizedBox(
-                                        height: 3,
-                                      ),
-                                      Image.asset("assets/icon_bobot.png",
-                                          height: 20),
-                                      SizedBox(
-                                        height: 3,
-                                      ),
-                                      Image.asset("assets/icon_harga.png",
-                                          height: 20),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "${data['usia']} Tahun",
-                                      ),
-                                      SizedBox(
-                                        height: 3,
-                                      ),
-                                      Text("${data['tinggi']} Meter"),
-                                      SizedBox(
-                                        height: 3,
-                                      ),
-                                      Text("${data['berat']} Kg"),
-                                      SizedBox(
-                                        height: 3,
-                                      ),
-                                      Text(
-                                        "${currencyFormatter.format(data['harga'])}",
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            )
-                          ],
-                        );
-                      }
-                      return Column(
-                        children: [
-                          ListTile(
-                            onTap: null,
-                            trailing: Icon(Icons.arrow_forward_ios),
-                            tileColor: Colors.black12,
-                            leading: SizedBox(
-                              width: 125,
-                              height: 50,
-                              child: Image.asset("assets/placeholder.png"),
-                            ),
-                            subtitle: Row(
-                              children: [
-                                Column(
-                                  children: [
-                                    Image.asset(
-                                      "assets/icon_umur.png",
-                                      height: 20,
-                                    ),
-                                    SizedBox(
-                                      height: 3,
-                                    ),
-                                    Image.asset("assets/icon_tinggi.png",
-                                        height: 20),
-                                    SizedBox(
-                                      height: 3,
-                                    ),
-                                    Image.asset("assets/icon_bobot.png",
-                                        height: 20),
-                                    SizedBox(
-                                      height: 3,
-                                    ),
-                                    Image.asset("assets/icon_harga.png",
-                                        height: 20),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      " - Tahun",
-                                    ),
-                                    SizedBox(
-                                      height: 3,
-                                    ),
-                                    Text(" - Meter"),
-                                    SizedBox(
-                                      height: 3,
-                                    ),
-                                    Text(" - Kg"),
-                                    SizedBox(
-                                      height: 3,
-                                    ),
-                                    Text(
-                                      "Rp -",
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                    },
+                                    child: SizedBox(
+                                        width: 60,
+                                        child: Image.asset(
+                                            "assets/icon_chat2.png")),
+                                  ))
+                            ],
                           ),
-                          SizedBox(
-                            height: 5,
+                        );
+                        //   Column(
+                        //   children: [
+                        //     ListTile(
+                        //       onTap: () {
+                        //         Navigator.push(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //             builder: (context) => DetailChat(
+                        //               idTernak: dataList[index]['uid'],
+                        //               kategori: dataList[index]['kategori'],
+                        //               dataTernak: data,
+                        //             ),
+                        //           ),
+                        //         );
+                        //       },
+                        //       trailing: Icon(Icons.arrow_forward_ios),
+                        //       tileColor: Colors.black12,
+                        //       leading: SizedBox(
+                        //         width: 120,
+                        //         height: 100,
+                        //         child: FutureBuilder(
+                        //           future: getImageFromStorage(data['gambar'],
+                        //               dataList[index]['kategori']),
+                        //           builder: (context, snapshot) {
+                        //             if (snapshot.hasData) {
+                        //               return ClipRRect(
+                        //                 borderRadius: BorderRadius.circular(5),
+                        //                 child: Image.network(
+                        //                   snapshot.data!,
+                        //                   fit: BoxFit.fill,
+                        //                 ),
+                        //               );
+                        //             }
+                        //             if (snapshot.hasError) {
+                        //               return Text("Terjadi Kesalahan");
+                        //             }
+                        //             return Center(
+                        //               child: CircularProgressIndicator(),
+                        //             );
+                        //           },
+                        //         ),
+                        //       ),
+                        //       subtitle: Row(
+                        //         children: [
+                        //           Column(
+                        //             children: [
+                        //               Image.asset(
+                        //                 "assets/icon_umur.png",
+                        //                 height: 20,
+                        //               ),
+                        //               SizedBox(
+                        //                 height: 3,
+                        //               ),
+                        //               Image.asset("assets/icon_tinggi.png",
+                        //                   height: 20),
+                        //               SizedBox(
+                        //                 height: 3,
+                        //               ),
+                        //               Image.asset("assets/icon_bobot.png",
+                        //                   height: 20),
+                        //               SizedBox(
+                        //                 height: 3,
+                        //               ),
+                        //               Image.asset("assets/icon_harga.png",
+                        //                   height: 20),
+                        //             ],
+                        //           ),
+                        //           SizedBox(
+                        //             width: 10,
+                        //           ),
+                        //           Column(
+                        //             crossAxisAlignment:
+                        //                 CrossAxisAlignment.start,
+                        //             children: [
+                        //               Text(
+                        //                 "${data['usia']} Tahun",
+                        //               ),
+                        //               SizedBox(
+                        //                 height: 3,
+                        //               ),
+                        //               Text("${data['tinggi']} Meter"),
+                        //               SizedBox(
+                        //                 height: 3,
+                        //               ),
+                        //               Text("${data['berat']} Kg"),
+                        //               SizedBox(
+                        //                 height: 3,
+                        //               ),
+                        //               Text(
+                        //                 "${currencyFormatter.format(data['harga'])}",
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     ),
+                        //     SizedBox(
+                        //       height: 5,
+                        //     )
+                        //   ],
+                        // );
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Stack(
+                          children: [
+                        ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            width: double.infinity,
+                            height: 300,
+                            child: Center(child: CircularProgressIndicator(),),
                           )
-                        ],
+                      ),
+                            // ClipRRect(
+                            //         borderRadius: BorderRadius.circular(20),
+                            //         child: Image.asset("assets/placeholder.png",width: double.infinity,
+                            //           height: 300,),
+                            //       ),
+                            Positioned(
+                              top: 0,
+                              left: 0,
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment(0, 1),
+                                    colors: <Color>[
+                                      Color(0x494949),
+                                      Color(0xFF505050),
+                                    ], // Gradient from https://learnui.design/tools/gradient-generator.html
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       );
+                      //   Column(
+                      //   children: [
+                      //     ListTile(
+                      //       onTap: null,
+                      //       trailing: Icon(Icons.arrow_forward_ios),
+                      //       tileColor: Colors.black12,
+                      //       leading: SizedBox(
+                      //         width: 125,
+                      //         height: 50,
+                      //         child: Image.asset("assets/placeholder.png"),
+                      //       ),
+                      //       subtitle: Row(
+                      //         children: [
+                      //           Column(
+                      //             children: [
+                      //               Image.asset(
+                      //                 "assets/icon_umur.png",
+                      //                 height: 20,
+                      //               ),
+                      //               SizedBox(
+                      //                 height: 3,
+                      //               ),
+                      //               Image.asset("assets/icon_tinggi.png",
+                      //                   height: 20),
+                      //               SizedBox(
+                      //                 height: 3,
+                      //               ),
+                      //               Image.asset("assets/icon_bobot.png",
+                      //                   height: 20),
+                      //               SizedBox(
+                      //                 height: 3,
+                      //               ),
+                      //               Image.asset("assets/icon_harga.png",
+                      //                   height: 20),
+                      //             ],
+                      //           ),
+                      //           SizedBox(
+                      //             width: 10,
+                      //           ),
+                      //           Column(
+                      //             crossAxisAlignment: CrossAxisAlignment.start,
+                      //             children: [
+                      //               Text(
+                      //                 " - Tahun",
+                      //               ),
+                      //               SizedBox(
+                      //                 height: 3,
+                      //               ),
+                      //               Text(" - Meter"),
+                      //               SizedBox(
+                      //                 height: 3,
+                      //               ),
+                      //               Text(" - Kg"),
+                      //               SizedBox(
+                      //                 height: 3,
+                      //               ),
+                      //               Text(
+                      //                 "Rp -",
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     SizedBox(
+                      //       height: 5,
+                      //     )
+                      //   ],
+                      // );
                     },
                   );
                 },
               );
             }
             if (snapshot.hasData) {
-              return Center(
-                child: Text("Kosong"),
+              return  Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        height: 100,
+                        child: Lottie.asset("assets/lottie/empty.json")),
+                    Text("Kosong",style: TextStyle(color: Colors.white,fontSize: 18),),
+                  ],
+                ),
               );
+              //   Padding(
+              //   padding: const EdgeInsets.all(10),
+              //   child: Stack(
+              //     children: [
+              //       ClipRRect(
+              //         borderRadius: BorderRadius.circular(20),
+              //         child: Image.asset("assets/placeholder.png",width: double.infinity,
+              //           height: 300,),
+              //       ),
+              //       Positioned(
+              //         top: 0,
+              //         left: 0,
+              //         bottom: 0,
+              //         right: 0,
+              //         child: Container(
+              //           decoration: BoxDecoration(
+              //             borderRadius: BorderRadius.circular(20),
+              //             gradient: LinearGradient(
+              //               begin: Alignment.topCenter,
+              //               end: Alignment(0, 1),
+              //               colors: <Color>[
+              //                 Color(0x494949),
+              //                 Color(0xFF505050),
+              //               ], // Gradient from https://learnui.design/tools/gradient-generator.html
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // );
             }
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return  Center(child: CircularProgressIndicator());
           },
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mondu_farm/home.dart';
+import 'package:mondu_farm/utils/color.dart';
 
 class Success extends StatelessWidget {
    Success({Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class Success extends StatelessWidget {
   Widget build(BuildContext context) {
     playVoiceover("napa pesanmu talanga proses ndanya");
     return Scaffold(
+      backgroundColor: Warna.latar,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -26,7 +28,7 @@ class Success extends StatelessWidget {
             Lottie.asset("assets/lottie/success.json"),
             SizedBox(height: 20,),
             IconButton(
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Warna.secondary)),
                 padding: EdgeInsets.all(20),
                 onPressed: (){
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => Home()));

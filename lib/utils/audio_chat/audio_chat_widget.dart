@@ -80,7 +80,7 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Warna.ungu,
+      color: Warna.primary,
       shape: RoundedRectangleBorder(
         borderRadius: widget.data['pesan_dari'] == "user"
             ? BorderRadius.only(
