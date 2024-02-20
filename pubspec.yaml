@@ -91,11 +91,6 @@ flutter:
     - assets/icon_nama.svg
     - assets/icon_notelepon.svg
     - assets/icon_chat.png
-    - assets/video_sample.mp4
-    - assets/logo_mondu.jpg
-    - assets/icon_login.svg
-    - assets/logo_mondu.png
-
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

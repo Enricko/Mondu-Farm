@@ -80,7 +80,7 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Warna.primary,
+      color: Warna.ungu,
       shape: RoundedRectangleBorder(
         borderRadius: widget.data['pesan_dari'] == "user"
             ? BorderRadius.only(
@@ -89,7 +89,7 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
                 bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20), topRight: Radius.circular(20)),
       ),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(5, 5, 10, 5),
+        padding: EdgeInsets.all(7.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
@@ -97,7 +97,7 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
               children: [
                 IconButton(
                   onPressed: _togglePlayer,
-                  icon: Icon(_audioPlayer.playerState.playing ? Icons.pause : Icons.play_arrow,color: Colors.white,),
+                  icon: Icon(_audioPlayer.playerState.playing ? Icons.pause : Icons.play_arrow,color: Colors.black,),
                 ),
                 Container(
                   child: Row(
@@ -119,18 +119,18 @@ class _AudioChatWidgetState extends State<AudioChatWidget> {
                         min: 0.0,
                         max: widget.data['durasi'] / 1,
                       ),
-                      // Column(
-                      //   children: [
+                      Column(
+                        children: [
                           // Text("${_formatDuration(_position)}"),
                           // Text("${_formatDuration(Duration(milliseconds: widget.data['durasi']))}"),
-                      //   ],
-                      // ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
-            Text("${DateFormat("hh:mm").format(DateTime.parse(widget.data['tanggal']))}",style: TextStyle(color: Colors.white),),
+            Text("${DateFormat("hh:mm").format(DateTime.parse(widget.data['tanggal']))}"),
           ],
         ),
       ),

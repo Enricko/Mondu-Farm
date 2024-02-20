@@ -46,33 +46,17 @@ class _CategoryListState extends State<CategoryList> {
     dataKey = [];
     await FirebaseDatabase.instance.ref().child('booking').get().then((value) {
       dataTernak = value.value as Map<dynamic, dynamic>;
-      dataTernak.entries.forEach((element) {
-        // if (DateTime.parse(element.value['tanggal_booking'].toString())
-        //     .add(Duration(days: 2))
-        //     .isBefore(DateTime.now())) {
-        //   await FirebaseDatabase.instance.ref().child("booking").child(element.key).remove();
-        // } else {
+      dataTernak.entries.forEach((element) async {
+        if (DateTime.parse(element.value['tanggal_booking'].toString())
+            .add(Duration(days: 2))
+            .isBefore(DateTime.now())) {
+          await FirebaseDatabase.instance.ref().child("booking").child(element.key).remove();
+        } else {
           dataKey.add(element.value['id_ternak']);
-        // }
+        }
       });
       setState(() {});
-      playVoiceover('maiwa pilih ${voiceKategori(widget.kategori.toLowerCase())} napa mbuham');
     });
-  }
-
-  voiceKategori(String ternak){
-    switch(ternak){
-      case 'sapi':
-        return "hapi";
-      case 'kuda':
-        return "njara";
-      case 'kerbau':
-        return "karambo";
-      case 'kambing':
-        return "kamambi";
-
-    }
-
   }
 
   @override
@@ -82,7 +66,7 @@ class _CategoryListState extends State<CategoryList> {
   }
   @override
   Widget build(BuildContext context) {
-
+    playVoiceover('Silahkan memilih ${widget.kategori} yang di inginkan');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Warna.latar,
@@ -101,11 +85,10 @@ class _CategoryListState extends State<CategoryList> {
               ),
               SizedBox(
                 width: double.infinity,
-                height: 150,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.asset(
-                    "assets/landscape_${widget.kategori.toLowerCase()}.jpg",
+                    "assets/banner_category.png",
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -168,34 +151,9 @@ class _CategoryListState extends State<CategoryList> {
                                                       uid: dataList[index]['key'],
                                                     )));
                                       },
-                                      child: Stack(
-                                        children: [
-                                          ClipRRect(
-                                              borderRadius: BorderRadius.circular(10),
-                                              child: Image.network(
-                                                  snapshot.data!,
-                                                  height: double.infinity,
-                                                  width: double.infinity,
-                                                  fit: BoxFit.fill)),
-                                          Positioned(
-                                            top: 0,
-                                            left: 0,
-                                            bottom: 0,
-                                            right: 0,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                gradient:  LinearGradient(
-                                                  colors: [Color(0x494949),
-                                                    Color(0xFF383838),],
-                                                  begin: Alignment.topCenter,
-                                                  end: Alignment(0, 1),
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ));
+                                      child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: Image.network(snapshot.data!, fit: BoxFit.fill)));
                                 }
                                 if (snapshot.hasError) {
                                   return Text("Terjadi Kesalahan");
