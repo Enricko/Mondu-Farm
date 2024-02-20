@@ -74,10 +74,10 @@ class _HomeState extends State<Home> {
     final XFile? image = await _picker.pickImage(
         source: ImageSource.camera);
     var f = await image!.readAsBytes();
-      setState(() {
-        file = File(image.path);
-        webImage = f;
-      });
+    setState(() {
+      file = File(image.path);
+      webImage = f;
+    });
 
     // if (img!.path != null) {
     //   imageFile = File(img.path);
@@ -105,8 +105,8 @@ class _HomeState extends State<Home> {
 
   Future<void> getPref() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-      id_user = pref.getString('id_user')!;
-      nama = pref.getString('nama')!;
+    id_user = pref.getString('id_user')!;
+    nama = pref.getString('nama')!;
 
     playVoiceover("maiwa pilih jenis mbada napa mbuham ");
     // setState(()  {
@@ -156,6 +156,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Warna.latar,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -178,13 +179,13 @@ class _HomeState extends State<Home> {
                                 barrierDismissible: true,
                                 builder: (BuildContext context) {
                                   return Dialog(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
-                                    insetPadding: EdgeInsets.all(10),
-                                    backgroundColor: Colors.white,
-                                    elevation: 1,
-                                    child: Profile(id_user: id_user)
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20))),
+                                      insetPadding: EdgeInsets.all(10),
+                                      backgroundColor: Colors.white,
+                                      elevation: 1,
+                                      child: Profile(id_user: id_user)
                                     // Padding(
                                     //   padding: const EdgeInsets.all(20),
                                     //   child: Column(
@@ -264,9 +265,9 @@ class _HomeState extends State<Home> {
                                     // ),
                                   );
                                 }).then((value) {
-                                  setState(() {
+                              setState(() {
 
-                                  });
+                              });
                             });
                             setState(() {
 
@@ -281,7 +282,7 @@ class _HomeState extends State<Home> {
                                     width: 40,
                                     height: 40,
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10000),
+                                        borderRadius: BorderRadius.circular(10000),
                                         child: Image.network(snapshot.data!,fit: BoxFit.cover,)),
                                   );
                                 }

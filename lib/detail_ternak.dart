@@ -88,28 +88,37 @@ class _DetailTernakState extends State<DetailTernak> {
   // String? url2;
   // String? url3;
 
-  List listUrl = [];
+  // List listUrl = [];
 
-  getImageUrl() async {
-     FirebaseStorage storage = await FirebaseStorage.instance;
-    Reference ref1 = storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child(widget.url1);
-    Reference ref2 = storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child(widget.url2);
-    Reference ref3 = storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child(widget.url3);
+ Future<List> getImageUrl() async {
+     FirebaseStorage storage =  FirebaseStorage.instance;
+    Reference ref1 = await storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child(widget.url1);
+    Reference ref2 = await storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child(widget.url2);
+    Reference ref3 = await storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child(widget.url3);
     var url1 = ref1.getDownloadURL();
     var url2 = ref2.getDownloadURL();
     var url3 = ref3.getDownloadURL();
+     List<Future<String>> listUrl = [];
 
     listUrl.add(url1);
     listUrl.add(url2);
     listUrl.add(url3);
+
+    return listUrl;
   }
+
+  final List<String> imgList = [
+    'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
+    'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
+    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=94a1e718d89ca60a6337a6008341ca50&auto=format&fit=crop&w=1950&q=80',
+  ];
 
 
   @override
   void initState() {
     super.initState();
     getPref();
-    getImageUrl;
+    // getImageUrl;
     // FirebaseStorage storage = FirebaseStorage.instance;
     // Reference ref1 = storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child("gambar_1");
     // Reference ref2 = storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child("gambar_2");
@@ -139,40 +148,51 @@ class _DetailTernakState extends State<DetailTernak> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  height: 250,
-                  width: double.infinity,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      widget.url1,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
+                // SizedBox(
+                //   height: 250,
+                //   width: double.infinity,
+                //   child: ClipRRect(
+                //     borderRadius: BorderRadius.circular(10),
+                //     child: Image.network(
+                //       widget.url1,
+                //       fit: BoxFit.fill,
+                //     ),
+                //   ),
+                // ),
                 // FutureBuilder(
                 //     future:,
                 //     builder: builder
                 // ),
-                CarouselSlider(
-                  options: CarouselOptions(
-                    autoPlay: true,
-                    aspectRatio: 2.0,
-                    enlargeCenterPage: true,
-                  ),
-                  items: listUrl.map((item) => Container(
-                    child: Container(
-                      margin: EdgeInsets.all(5.0),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                          child: Stack(
-                            children: <Widget>[
-                              Image.network(item.toString(), fit: BoxFit.cover, width: 1000.0),
-                            ],
-                          )),
-                    ),
-                  ))
-                      .toList(),
+                FutureBuilder(
+                  future: getImageUrl(),
+                  builder: (context, snapshot){
+                    if (snapshot.hasData) {
+                       return CarouselSlider(
+                        options: CarouselOptions(
+                          autoPlay: true,
+                          aspectRatio: 2.0,
+                          enlargeCenterPage: true,
+                        ),
+                        items:
+                        imgList.map((item) => Container(
+                          child: Container(
+                            margin: EdgeInsets.all(5.0),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                child: Image.network(item.toString(), fit: BoxFit.cover, width: 1000.0)),
+                          ),
+                        ))
+                            .toList(),
+                      );
+                    }
+                    if (snapshot.hasError) {
+
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+
+                  },
                 ),
                 SizedBox(
                   height: 15,
