@@ -16,9 +16,7 @@ class DetailTernak extends StatefulWidget {
   final String url;
   final String kategori;
 
-  const DetailTernak(
-      {Key? key, required this.url, required this.kategori, required this.uid})
-      : super(key: key);
+  const DetailTernak({Key? key, required this.url, required this.kategori, required this.uid}) : super(key: key);
 
   @override
   State<DetailTernak> createState() => _DetailTernakState();
@@ -53,17 +51,11 @@ class _DetailTernakState extends State<DetailTernak> {
     setState(() {
       getUserFromFirebase();
     });
-    playVoiceover("Maiwa melalui tawar menawar ndang langsung tek");
   }
 
   Future<void> getUserFromFirebase() async {
     try {
-      FirebaseDatabase.instance
-          .ref()
-          .child("users")
-          .child(id_user)
-          .onValue
-          .listen((event) {
+      FirebaseDatabase.instance.ref().child("users").child(id_user).onValue.listen((event) {
         var snapshot = event.snapshot.value as Map;
         nama = snapshot['nama'];
         no_telepon = snapshot['no_telepon'];
@@ -81,7 +73,7 @@ class _DetailTernakState extends State<DetailTernak> {
 
   @override
   Widget build(BuildContext context) {
-
+    playVoiceover("Lakukan Negosiasi atau Booking langsung");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Warna.latar,
@@ -94,7 +86,7 @@ class _DetailTernakState extends State<DetailTernak> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 250,
+                  height: 300,
                   width: double.infinity,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
@@ -115,105 +107,74 @@ class _DetailTernakState extends State<DetailTernak> {
                       .child(widget.uid)
                       .onValue,
                   builder: (context, snapshot) {
-                    if (snapshot.hasData &&
-                        (snapshot.data!).snapshot.value != null) {
+                    if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
                       Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                          (snapshot.data! as DatabaseEvent).snapshot.value
-                              as Map<dynamic, dynamic>);
+                          (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
                       return Column(
                         children: [
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          //   children: [
-                          //     Expanded(
-                          //         child: DetailInfo(
-                          //             icon: "assets/icon_umur.png",
-                          //             value: data['usia'].toString(),
-                          //           height: 70,
-                          //         ),
-                          //     ),
-                          //     SizedBox(
-                          //       width: 10,
-                          //     ),
-                          //     Expanded(
-                          //       child: DetailInfo(
-                          //         icon: "assets/icon_bobot.png",
-                          //         value: "${data['berat'].toString()} Kg",
-                          //         height: 70,
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          DetailInfo(
-                            icon: "assets/trend.png",
-                            value: "${data['usia'].toString()} Tahun",
-                            height: 65,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(child: DetailInfo(icon: "assets/icon_umur.png", value: data['usia'].toString())),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                  child: DetailInfo(
+                                icon: "assets/icon_tinggi.png",
+                                value: "${data['tinggi'].toString()} M",
+                              )),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           DetailInfo(
-                            icon: "assets/scale.png",
+                            icon: "assets/icon_bobot.png",
                             value: "${data['berat'].toString()} Kg",
-                            height: 60,
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           DetailInfo(
-                            icon: "assets/roll.png",
-                            value: "${data['tinggi'].toString()} Meter",
-                            height: 60,
-                          ),
-                          DetailInfo(
-                              icon: "assets/money2.png",
+                              icon: "assets/icon_harga.png",
                               value: currencyFormatter.format(
                                 data['harga'],
-
-                              ),
-                          height: 60,),
+                              )),
                           SizedBox(
-                            height: 20,
+                            height: 40,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               IconButton(
-                                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(EdgeInsets.fromLTRB(18,10,18,18)),
-                    backgroundColor:
-                    MaterialStateProperty.all(Warna.secondary)),
+                                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => DetailChat(
-                                          idTernak:
-                                              snapshot.data!.snapshot.key!,
+                                          idTernak: snapshot.data!.snapshot.key!,
                                           kategori: widget.kategori,
                                           dataTernak: data,
                                         ),
                                       ),
                                     );
                                   },
-                                  icon: SizedBox(
-                                      height: 80,
-                                      child: Image.asset("assets/icon_chat2.png"))),
+                                  icon: Image.asset("assets/icon_chat.png")),
                               IconButton(
-                                  style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(EdgeInsets.fromLTRB(18,10,18,18)),
-                                      backgroundColor:
-                                      MaterialStateProperty.all(Warna.secondary)),
+                                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
                                   onPressed: () {
-                                    playVoiceover("apakah  nyum yakin?");
+                                    playVoiceover("Apakah anda yakin?");
                                     Alerts.showAlertYesNo(
-                                      url: "assets/lottie/booking.json",
                                       onPressYes: () async {
                                         Booking.insert(context, {
                                           "id_user": id_user,
                                           'nama': nama,
                                           'no_telepon': no_telepon,
                                           'id_ternak': widget.uid,
-                                          'url_gambar': widget.url,
                                           'kategori': widget.kategori,
-                                          'tanggal_booking':
-                                              // "2024-01-14 14:22:29.368050",
-                                          DateTime.now().toString(),
-                                          // DateTime.now().subtract(Duration(days: 3)).toString(), // Testing
+                                          'tanggal_booking': DateTime.now().toString(),
                                           'status_booking': "Sedang Di Booking",
                                         });
                                       },
@@ -223,9 +184,7 @@ class _DetailTernakState extends State<DetailTernak> {
                                       context: context,
                                     );
                                   },
-                                  icon: SizedBox(
-                                      height: 80,
-                                      child: Image.asset("assets/shopping-cart1.png"))),
+                                  icon: Image.asset("assets/icon_booking.png")),
                             ],
                           )
                         ],
@@ -254,91 +213,40 @@ class _DetailTernakState extends State<DetailTernak> {
 class DetailInfo extends StatelessWidget {
   final String icon;
   final String value;
-  final double? height;
 
   const DetailInfo({
     super.key,
     required this.icon,
     required this.value,
-    this.height = 60,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
+    return Container(
+        // width: 150,
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+            color: Colors.purple,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(50),
+                bottomLeft: Radius.circular(50),
+                topRight: Radius.circular(20),
+                bottomRight: Radius.circular(20))),
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            ClipOval(
-                child: Container(
-                    width: 80.0,
-                    // Adjust the width and height as needed
-                    height: 80.0,
-                    padding: EdgeInsets.all(height! - 50),
-                    color: Warna.secondary,
-                    child: Image.asset(icon,
-                    //     height: height,
-                    // width:height,
-
-                    ))),
-            SizedBox(
-              width: 10,
-            ),
+            Image.asset(icon, height: 60),
             Expanded(
-              child: TextFormField(
-                initialValue: value,
-                style: TextStyle(color: Colors.black),
-                readOnly: true,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Warna.tersier,
-                  // hintText: "Mond**",
-                  // hintStyle: const TextStyle(
-                  //   color: Color(0xFF696F79),
-                  //   fontSize: 14,
-                  //   fontFamily: 'Poppins',
-                  //   fontWeight: FontWeight.w400,
-                  // ),
-                  isDense: true,
-                  contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(13),
-                    borderSide:
-                        const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
-                  ),
+              
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  value,
+                  style: TextStyle(fontSize: 30, color: Colors.white),
                 ),
               ),
             )
           ],
-        ),
-        SizedBox(height: 10,)
-      ],
-    );
-    // Container(
-    //   // width: 150,
-    //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-    //   decoration: BoxDecoration(
-    //       color: Colors.purple,
-    //       borderRadius: BorderRadius.only(
-    //           topLeft: Radius.circular(50),
-    //           bottomLeft: Radius.circular(50),
-    //           topRight: Radius.circular(20),
-    //           bottomRight: Radius.circular(20))),
-    //   child: Row(
-    //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-    //     children: [
-    //       Image.asset(icon, height: height),
-    //       Expanded(
-    //         child: FittedBox(
-    //           fit: BoxFit.scaleDown,
-    //           child: Text(
-    //             value,
-    //             style: TextStyle(fontSize: 30, color: Colors.white),
-    //           ),
-    //         ),
-    //       )
-    //     ],
-    //   ));
+        ));
   }
 }

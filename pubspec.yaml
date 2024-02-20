@@ -56,7 +56,6 @@ dependencies:
   lottie: ^2.7.0
   just_audio: ^0.9.36
   flutter_tts: ^3.8.5
-  video_player: ^2.8.2
 
 dev_dependencies:
   flutter_test:
@@ -89,11 +88,6 @@ flutter:
     - assets/icon_nama.svg
     - assets/icon_notelepon.svg
     - assets/icon_chat.png
-    - assets/video_sample.mp4
-    - assets/logo_mondu.jpg
-    - assets/icon_login.svg
-    - assets/logo_mondu.png
-
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

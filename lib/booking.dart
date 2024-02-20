@@ -7,8 +7,8 @@ import 'package:mondu_farm/success.dart';
 class Booking {
   static void insert(BuildContext context, Map<dynamic, dynamic> data) async {
     try {
-      // var key = FirebaseDatabase.instance.ref().child('users').push().key;
-      // var id_booking = FirebaseDatabase.instance.ref().push().key;
+      var key = FirebaseDatabase.instance.ref().child('users').push().key;
+      var id_booking = FirebaseDatabase.instance.ref().push().key;
 
       EasyLoading.show(status: 'loading...');
       await FirebaseDatabase.instance.ref()
@@ -20,7 +20,6 @@ class Booking {
         "nama": data['nama'].toString(),
         "no_telepon": data['no_telepon'].toString(),
         "id_ternak": data['id_ternak'].toString(),
-        "url_gambar": data['url_gambar'].toString(),
         "kategori": data['kategori'].toString(),
         "tanggal_booking": data['tanggal_booking'].toString(),
         "status_booking": data['status_booking'].toString(),

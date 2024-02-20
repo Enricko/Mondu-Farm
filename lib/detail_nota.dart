@@ -25,7 +25,8 @@ class DetailNota extends StatefulWidget {
 
 class _DetailNotaState extends State<DetailNota> {
   String formatteddate(String date) {
-    var formatteddate = DateFormat('dd-MM-yyyy').format(DateTime.parse(date));
+    var formatteddate =
+    DateFormat('d MMMM y').format(DateTime.parse(date));
     return formatteddate;
   }
 
@@ -33,16 +34,15 @@ class _DetailNotaState extends State<DetailNota> {
   void initState() {
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
+        title: Text("Nota"),
         centerTitle: true,
         backgroundColor: Warna.latar,
       ),
-      backgroundColor: Warna.latar,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: SingleChildScrollView(
@@ -53,18 +53,16 @@ class _DetailNotaState extends State<DetailNota> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset("assets/id-card.png", width: 50),
+                    Image.asset("assets/icon_nama.png", width: 50),
                     SizedBox(
-                      width: 10,
+                      width: 5,
                     ),
                     Container(
                       width: 170,
-                      decoration: BoxDecoration(
-                          color: Warna.tersier,
-                          borderRadius: BorderRadius.all(Radius.circular(10))
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                      child: Center(child: Text(widget.nama,style: TextStyle(color: Colors.black),)),
+                      color: Warna.abuabu,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      child: Center(child: Text(widget.nama)),
                     ),
                   ],
                 ),
@@ -75,19 +73,15 @@ class _DetailNotaState extends State<DetailNota> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset("assets/phones.png", width: 50),
+                  Image.asset("assets/icon_notelepon.png", width: 50),
                   SizedBox(
-                    width: 10,
+                    width: 5,
                   ),
                   Container(
                     width: 170,
-
-                    decoration: BoxDecoration(
-                        color: Warna.tersier,
-                      borderRadius: BorderRadius.all(Radius.circular(10))
-                    ),
+                    color: Warna.abuabu,
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    child: Center(child: Text(widget.no_telepon,style: TextStyle(color: Colors.black),)),
+                    child: Center(child: Text(widget.no_telepon)),
                   ),
                 ],
               ),
@@ -103,7 +97,7 @@ class _DetailNotaState extends State<DetailNota> {
                       (snapshot.data!).snapshot.value != null) {
                     Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
                         (snapshot.data! as DatabaseEvent).snapshot.value
-                            as Map<dynamic, dynamic>);
+                        as Map<dynamic, dynamic>);
                     print(data['tanggal_booking']);
                     return Column(
                       children: [
@@ -114,9 +108,8 @@ class _DetailNotaState extends State<DetailNota> {
                           width: width,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                              data["urlGambar"],
-                              // "assets/model_sapi.png",
+                            child: Image.asset(
+                              "assets/model_sapi.png",
                               fit: BoxFit.fill,
                             ),
                           ),
@@ -124,44 +117,40 @@ class _DetailNotaState extends State<DetailNota> {
                         SizedBox(
                           height: 10,
                         ),
-                        // Row(
-                        //   children: [
-                        //     Expanded(
-                        //         child: DetailInfo(
-                        //             icon: "assets/icon_umur.png", value: "${data['umur']}")),
-                        //     SizedBox(
-                        //       width: 10,
-                        //     ),
-                        //     Expanded(
-                        //         child: DetailInfo(
-                        //             icon: "assets/icon_bobot.png",
-                        //             value: "${data['berat']}")),
-                        //   ],
-                        // ),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: DetailInfo(
+                                    icon: "assets/icon_umur.png", value: "${data['umur']}")),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                                child: DetailInfo(
+                                    icon: "assets/icon_bobot.png",
+                                    value: "${data['berat']}")),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         DetailInfo(
-                            icon: "assets/trend.png",
-                            height: 65,
-                            value: "${data['umur']} Tahun"),
+                            icon: "assets/icon_tinggi.png", value: "${data['tinggi']}"),
+                        SizedBox(
+                          height: 10,
+                        ),
                         DetailInfo(
-                            icon: "assets/scale.png",
-                            height: 60,
-                            value: "${data['berat']} Kg"),
+                            icon: "assets/icon_harga.png", value: "${data['harga']}"),
+                        SizedBox(
+                          height: 10,
+                        ),
                         DetailInfo(
-                            icon: "assets/roll.png",
-                            height: 60,
-                            value: "${data['tinggi']} Meter"),
+                            icon: "assets/icon_kalender.png", value: "${formatteddate(data['tanggal_booking'])}"),
+                        SizedBox(
+                          height: 10,
+                        ),
                         DetailInfo(
-                            icon: "assets/money2.png",
-                            height: 60,
-                            value: "${data['harga']}"),
-                        DetailInfo(
-                            icon: "assets/calendar.png",
-                            height: 65,
-                            value: "${formatteddate(data['tanggal_booking'])}"),
-                        DetailInfo(
-                            icon: "assets/icon_truk.png",
-                            value:
-                                "${formatteddate(DateTime.parse(data['tanggal_booking']).add(Duration(days: 2)).toString())}"),
+                            icon: "assets/icon_truk.png", value: "${formatteddate(DateTime.parse(data['tanggal_booking']).add(Duration(days: 2)).toString())}"),
                       ],
                     );
                   }
