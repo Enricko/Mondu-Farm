@@ -35,8 +35,8 @@ class _HomeState extends State<Home> {
 
   final FlutterTts flutterTts = FlutterTts();
 
-  Future<String> getImageFromStorage(String pathName) {
-    FirebaseStorage storage = FirebaseStorage.instance;
+  Future<String> getImageFromStorage(String pathName) async{
+    FirebaseStorage storage = await FirebaseStorage.instance;
     Reference ref = storage.ref().child("users").child(id_user).child(pathName);
 
     return ref.getDownloadURL();
