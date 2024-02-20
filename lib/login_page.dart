@@ -34,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     var data = {
       'nama': name,
       'no_telepon': phoneNumber,
+      'photo_url' : "null"
     };
     Auth.login(data, context);
   }

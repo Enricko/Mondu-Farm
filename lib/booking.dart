@@ -9,8 +9,6 @@ class Booking {
     try {
       // var key = FirebaseDatabase.instance.ref().child('users').push().key;
       // var id_booking = FirebaseDatabase.instance.ref().push().key;
-
-      EasyLoading.show(status: 'loading...');
       await FirebaseDatabase.instance.ref()
           .child("booking")
           // .child(key!)

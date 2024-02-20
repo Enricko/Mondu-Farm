@@ -129,7 +129,9 @@ class _CategoryListState extends State<CategoryList> {
                         final currentData = Map<String, dynamic>.from(value);
                         dataList.add({
                           'key': key,
-                          'gambar': currentData['gambar'],
+                          'gambar_1': currentData['gambar_1'],
+                          'gambar_2': currentData['gambar_2'],
+                          'gambar_3': currentData['gambar_3'],
                           'usia': currentData['usia'],
                           'tinggi': currentData['tinggi'],
                           'berat': currentData['berat'],
@@ -147,16 +149,21 @@ class _CategoryListState extends State<CategoryList> {
                           itemCount: dataList.length, // Number of items
                           itemBuilder: (context, index) {
                             return FutureBuilder(
-                              future: getImageFromStorage(dataList[index]['gambar']),
+                              future: getImageFromStorage(dataList[index]['gambar_1'].toString()),
                               builder: (context, snapshot) {
+
                                 if (snapshot.hasData) {
+                                  print(snapshot.data!);
                                   return GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (ctx) => DetailTernak(
-                                                      url: snapshot.data!,
+                                                      // url1: snapshot.data!,
+                                                      url1: dataList[index]['gambar_1'].toString(),
+                                                      url2: dataList[index]['gambar_2'].toString(),
+                                                      url3: dataList[index]['gambar_3'].toString(),
                                                       kategori: widget.kategori.toLowerCase(),
                                                       uid: dataList[index]['key'],
                                                     )));

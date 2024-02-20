@@ -57,6 +57,8 @@ dependencies:
   just_audio: ^0.9.36
   flutter_tts: ^3.8.5
   video_player: ^2.8.2
+  carousel_slider: ^4.2.1
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
