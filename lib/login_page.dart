@@ -27,11 +27,12 @@ class _LoginPageState extends State<LoginPage> {
   void login() {
     var name = nameController.text;
     var phoneNumber = phoneNumberController.text;
-      var data = {
-        'nama': name,
-        'no_telepon': phoneNumber,
-      };
-      Auth.login(data, context);
+    var data = {
+      'nama': name,
+      'no_telepon': phoneNumber,
+      'photo_url' : "null"
+    };
+    Auth.login(data, context);
   }
 
   void cekUser()async {

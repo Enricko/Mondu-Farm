@@ -36,6 +36,7 @@ class Alerts {
       {
         required VoidCallback onPressYes,
         required VoidCallback onPressNo,
+        required String url,
         required BuildContext context}) {
     showDialog(
       context: context,
@@ -44,7 +45,7 @@ class Alerts {
         return AlertDialog(
           icon: SizedBox(
               height: 80,
-              child: Lottie.asset("assets/lottie/booking.json")),
+              child: Lottie.asset(url)),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           actions: [
             SizedBox(
@@ -63,6 +64,7 @@ class Alerts {
               width: double.infinity,
               child: TextButton(
                 style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
@@ -72,7 +74,7 @@ class Alerts {
                       ),
                     )),
                 onPressed: onPressNo,
-                child: Icon(Icons.close)),
+                child: Icon(Icons.close,color: Colors.white,)),
               ),
 
           ],

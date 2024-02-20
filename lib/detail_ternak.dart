@@ -1,3 +1,5 @@
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +15,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailTernak extends StatefulWidget {
   final String uid;
-  final String url;
+  final String url1;
+  final String url2;
+  final String url3;
   final String kategori;
 
-  const DetailTernak({Key? key, required this.url, required this.kategori, required this.uid}) : super(key: key);
+  const DetailTernak(
+      {Key? key,
+      required this.url1,
+      required this.kategori,
+      required this.uid,
+      required this.url2,
+      required this.url3})
+      : super(key: key);
 
   @override
   State<DetailTernak> createState() => _DetailTernakState();
@@ -51,6 +62,7 @@ class _DetailTernakState extends State<DetailTernak> {
     setState(() {
       getUserFromFirebase();
     });
+    playVoiceover("Maiwa melalui tawar menawar ndang langsung tek");
   }
 
   Future<void> getUserFromFirebase() async {
@@ -65,15 +77,64 @@ class _DetailTernakState extends State<DetailTernak> {
     }
   }
 
+  Future<DataSnapshot> fetchList() async {
+    const path = 'SET YOUR PATH HERE';
+    return await FirebaseDatabase.instance.ref(path).get();
+  }
+
+  // List listImg = [];
+  //
+  // String? url1;
+  // String? url2;
+  // String? url3;
+
+  List listUrl = [];
+
+  // getImageUrl() async {
+  //   FirebaseStorage storage = FirebaseStorage.instance;
+  //   Reference ref1 =
+  //       storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child(widget.url1);
+  //   Reference ref2 =
+  //       storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child(widget.url2);
+  //   Reference ref3 =
+  //       storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child(widget.url3);
+  //   var url1 = await ref1.getDownloadURL();
+  //   var url2 = await ref2.getDownloadURL();
+  //   var url3 = await ref3.getDownloadURL();
+
+  //   listUrl.add(url1);
+  //   listUrl.add(url2);
+  //   listUrl.add(url3);
+  // }
+  Future<String> getImageUrl(String url) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference ref = storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child(url);
+    var getUrl = await ref.getDownloadURL();
+    return getUrl;
+  }
+
   @override
   void initState() {
     super.initState();
     getPref();
+    // FirebaseStorage storage = FirebaseStorage.instance;
+    // Reference ref1 = storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child("gambar_1");
+    // Reference ref2 = storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child("gambar_2");
+    // Reference ref3 = storage.ref().child("ternak").child(widget.kategori.toLowerCase()).child("gambar_3");
+    // url1 = ref1.getDownloadURL();
+    // url2 = ref2.getDownloadURL();
+    // url3 = ref3.getDownloadURL();
+    // listImg.add(
+    //   {
+    //     "gambar_1" : widget.url1,
+    //     "gambar_2" : widget.url2,
+    //     "gambar_3" : widget.url3,
+    //   }
+    // );
   }
 
   @override
   Widget build(BuildContext context) {
-    playVoiceover("Lakukan Negosiasi atau Booking langsung");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Warna.latar,
@@ -86,15 +147,51 @@ class _DetailTernakState extends State<DetailTernak> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 300,
+                  height: 250,
                   width: double.infinity,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      widget.url,
-                      fit: BoxFit.fill,
-                    ),
+                    child: FutureBuilder(
+                        future: getImageUrl(widget.url1),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Image.network(
+                              snapshot.data!,
+                              fit: BoxFit.fill,
+                            );
+                          }
+                          
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }),
                   ),
+                ),
+                // FutureBuilder(
+                //     future:,
+                //     builder: builder
+                // ),
+                CarouselSlider(
+                  options: CarouselOptions(
+                    autoPlay: true,
+                    aspectRatio: 2.0,
+                    enlargeCenterPage: true,
+                  ),
+                  items: listUrl
+                      .map((item) => Container(
+                            child: Container(
+                              margin: EdgeInsets.all(5.0),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Image.network(item.toString(),
+                                          fit: BoxFit.cover, width: 1000.0),
+                                    ],
+                                  )),
+                            ),
+                          ))
+                      .toList(),
                 ),
                 SizedBox(
                   height: 15,
@@ -109,46 +206,65 @@ class _DetailTernakState extends State<DetailTernak> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
                       Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                          (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
+                          (snapshot.data! as DatabaseEvent).snapshot.value
+                              as Map<dynamic, dynamic>);
                       return Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(child: DetailInfo(icon: "assets/icon_umur.png", value: data['usia'].toString())),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                  child: DetailInfo(
-                                icon: "assets/icon_tinggi.png",
-                                value: "${data['tinggi'].toString()} M",
-                              )),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          //   children: [
+                          //     Expanded(
+                          //         child: DetailInfo(
+                          //             icon: "assets/icon_umur.png",
+                          //             value: data['usia'].toString(),
+                          //           height: 70,
+                          //         ),
+                          //     ),
+                          //     SizedBox(
+                          //       width: 10,
+                          //     ),
+                          //     Expanded(
+                          //       child: DetailInfo(
+                          //         icon: "assets/icon_bobot.png",
+                          //         value: "${data['berat'].toString()} Kg",
+                          //         height: 70,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          DetailInfo(
+                            icon: "assets/trend.png",
+                            value: "${data['usia'].toString()} Tahun",
+                            height: 65,
                           ),
                           DetailInfo(
-                            icon: "assets/icon_bobot.png",
+                            icon: "assets/scale.png",
                             value: "${data['berat'].toString()} Kg",
-                          ),
-                          SizedBox(
-                            height: 10,
+                            height: 60,
                           ),
                           DetailInfo(
-                              icon: "assets/icon_harga.png",
-                              value: currencyFormatter.format(
-                                data['harga'],
-                              )),
+                            icon: "assets/roll.png",
+                            value: "${data['tinggi'].toString()} Meter",
+                            height: 60,
+                          ),
+                          DetailInfo(
+                            icon: "assets/money2.png",
+                            value: currencyFormatter.format(
+                              data['harga'],
+                            ),
+                            height: 60,
+                          ),
                           SizedBox(
-                            height: 40,
+                            height: 20,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               IconButton(
-                                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
+                                  style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          EdgeInsets.fromLTRB(18, 10, 18, 18)),
+                                      backgroundColor: MaterialStateProperty.all(Warna.secondary)),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
@@ -161,20 +277,29 @@ class _DetailTernakState extends State<DetailTernak> {
                                       ),
                                     );
                                   },
-                                  icon: Image.asset("assets/icon_chat.png")),
+                                  icon: SizedBox(
+                                      height: 80, child: Image.asset("assets/icon_chat2.png"))),
                               IconButton(
-                                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.purple)),
+                                  style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          EdgeInsets.fromLTRB(18, 10, 18, 18)),
+                                      backgroundColor: MaterialStateProperty.all(Warna.secondary)),
                                   onPressed: () {
-                                    playVoiceover("Apakah anda yakin?");
+                                    playVoiceover("apakah  nyum yakin?");
                                     Alerts.showAlertYesNo(
+                                      url: "assets/lottie/booking.json",
                                       onPressYes: () async {
                                         Booking.insert(context, {
                                           "id_user": id_user,
                                           'nama': nama,
                                           'no_telepon': no_telepon,
                                           'id_ternak': widget.uid,
+                                          'url_gambar': widget.url1,
                                           'kategori': widget.kategori,
-                                          'tanggal_booking': DateTime.now().toString(),
+                                          'tanggal_booking':
+                                              // "2024-01-14 14:22:29.368050",
+                                              DateTime.now().toString(),
+                                          // DateTime.now().subtract(Duration(days: 3)).toString(), // Testing
                                           'status_booking': "Sedang Di Booking",
                                         });
                                       },
@@ -184,7 +309,8 @@ class _DetailTernakState extends State<DetailTernak> {
                                       context: context,
                                     );
                                   },
-                                  icon: Image.asset("assets/icon_booking.png")),
+                                  icon: SizedBox(
+                                      height: 80, child: Image.asset("assets/shopping-cart1.png"))),
                             ],
                           )
                         ],
@@ -208,45 +334,112 @@ class _DetailTernakState extends State<DetailTernak> {
       ),
     );
   }
+
+  List<Widget> imageSliders(List imgList) => imgList
+      .map((item) => Container(
+            child: Container(
+              margin: EdgeInsets.all(5.0),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  child: Stack(
+                    children: <Widget>[
+                      Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                    ],
+                  )),
+            ),
+          ))
+      .toList();
 }
 
 class DetailInfo extends StatelessWidget {
   final String icon;
   final String value;
+  final double? height;
 
   const DetailInfo({
     super.key,
     required this.icon,
     required this.value,
+    this.height = 60,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        // width: 150,
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-            color: Colors.purple,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(50),
-                bottomLeft: Radius.circular(50),
-                topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20))),
-        child: Row(
+    return Column(
+      children: [
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Image.asset(icon, height: 60),
+            ClipOval(
+                child: Container(
+                    width: 80.0,
+                    // Adjust the width and height as needed
+                    height: 80.0,
+                    padding: EdgeInsets.all(height! - 50),
+                    color: Warna.secondary,
+                    child: Image.asset(
+                      icon,
+                      //     height: height,
+                      // width:height,
+                    ))),
+            SizedBox(
+              width: 10,
+            ),
             Expanded(
-              
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  value,
-                  style: TextStyle(fontSize: 30, color: Colors.white),
+              child: TextFormField(
+                initialValue: value,
+                style: TextStyle(color: Colors.black),
+                readOnly: true,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Warna.tersier,
+                  // hintText: "Mond**",
+                  // hintStyle: const TextStyle(
+                  //   color: Color(0xFF696F79),
+                  //   fontSize: 14,
+                  //   fontFamily: 'Poppins',
+                  //   fontWeight: FontWeight.w400,
+                  // ),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(13),
+                    borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                  ),
                 ),
               ),
             )
           ],
-        ));
+        ),
+        SizedBox(
+          height: 10,
+        )
+      ],
+    );
+    // Container(
+    //   // width: 150,
+    //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    //   decoration: BoxDecoration(
+    //       color: Colors.purple,
+    //       borderRadius: BorderRadius.only(
+    //           topLeft: Radius.circular(50),
+    //           bottomLeft: Radius.circular(50),
+    //           topRight: Radius.circular(20),
+    //           bottomRight: Radius.circular(20))),
+    //   child: Row(
+    //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+    //     children: [
+    //       Image.asset(icon, height: height),
+    //       Expanded(
+    //         child: FittedBox(
+    //           fit: BoxFit.scaleDown,
+    //           child: Text(
+    //             value,
+    //             style: TextStyle(fontSize: 30, color: Colors.white),
+    //           ),
+    //         ),
+    //       )
+    //     ],
+    //   ));
   }
 }
